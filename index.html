@@ -3,30 +3,34 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-<title>Simulatore Pensione Complementare | Dynamic vs ActivITAS</title>
+<title>Pension Fund Simulator | Dynamic vs ActivITAS</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{--bg:#0d0e10;--sf:#15171b;--sf2:#1c1f25;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--tx:#ede9e3;--mu:#888480;--di:#4f4d4a;--ra:#4f9cf9;--it:#f97b4f;--go:#e8c96a;--go2:rgba(232,201,106,.11);--gr:#5ec994;--re:#f06b6b}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5}
 .app{display:grid;grid-template-columns:310px 1fr;min-height:100vh}
-.sb{background:var(--sf);border-right:1px solid var(--bd);padding:22px 18px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
+.sb{background:var(--sf);border-right:1px solid var(--bd);padding:18px;display:flex;flex-direction:column;gap:16px;overflow-y:auto}
 .logo{font-family:Georgia,serif;font-size:16px;line-height:1.2}.logo em{color:var(--go);font-style:italic}
+.lang-bar{display:flex;gap:4px;margin-bottom:2px}
+.lang-btn{background:var(--sf2);border:1px solid var(--bd);color:var(--mu);padding:3px 8px;border-radius:4px;cursor:pointer;font-size:13px;transition:all .2s}
+.lang-btn.active{background:var(--go2);border-color:var(--go);color:var(--tx)}
 .ls{font-size:9px;color:var(--di);letter-spacing:.1em;margin-top:2px;font-family:monospace}
 .gl{font-size:9px;letter-spacing:.1em;color:var(--di);text-transform:uppercase;padding-bottom:5px;border-bottom:1px solid var(--bd);margin-bottom:2px;font-family:monospace}
-.ig{display:flex;flex-direction:column;gap:11px}
-.fi{display:flex;flex-direction:column;gap:4px}
+.ig{display:flex;flex-direction:column;gap:10px}
+.fi{display:flex;flex-direction:column;gap:3px}
 .fi label{font-size:11px;color:var(--mu)}
-.fr{display:flex;align-items:center;gap:8px}
+.fr{display:flex;align-items:center;gap:6px}
+input[type=number]{background:var(--sf2);color:var(--tx);border:1px solid var(--bd2);border-radius:5px;padding:7px 9px;font-size:13px;width:100%;outline:none;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;-moz-appearance:textfield}
+input[type=number]:focus{border-color:var(--go)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{opacity:1}
 select{background:var(--sf2);color:var(--tx);border:1px solid var(--bd2);border-radius:5px;padding:5px 8px;font-size:11px;width:100%;cursor:pointer}
-input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--bd2);border-radius:2px;outline:none}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--go);cursor:pointer;border:2px solid var(--bg)}
-input[type=text]{background:var(--sf2);color:var(--tx);border:1px solid var(--bd2);border-radius:5px;padding:6px 8px;font-size:11px;width:100%;outline:none;font-family:inherit}
+input[type=text]{background:var(--sf2);color:var(--tx);border:1px solid var(--bd2);border-radius:5px;padding:7px 9px;font-size:12px;width:100%;outline:none;font-family:inherit}
 input[type=text]:focus{border-color:var(--go)}
-.va{font-size:12px;color:var(--tx);min-width:75px;text-align:right;font-family:monospace}
+.va{font-size:11px;color:var(--di);font-family:monospace;min-width:40px;text-align:right}
 .pill{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font-size:10px;color:var(--mu);line-height:1.6}
 .pill strong{color:var(--tx)}
-.btn-full,.btn-export{display:inline-block;border-radius:5px;padding:6px 12px;font-size:10px;cursor:pointer;text-align:center;user-select:none;margin-top:4px;transition:all .2s}
+.btn-full,.btn-export{display:inline-block;border-radius:5px;padding:7px 12px;font-size:10px;cursor:pointer;text-align:center;user-select:none;margin-top:4px;transition:all .2s;font-weight:500}
 .btn-full{background:rgba(94,201,148,.12);border:1px solid rgba(94,201,148,.35);color:var(--gr)}
 .btn-full.active-rendita{background:rgba(94,201,148,.25);border-color:var(--gr);color:var(--tx);font-weight:600}
 .btn-export{background:rgba(79,156,249,.12);border:1px solid rgba(79,156,249,.3);color:var(--ra)}
@@ -70,59 +74,64 @@ input[type=text]:focus{border-color:var(--go)}
 .fiscal-note{font-size:9px;color:var(--di);line-height:1.5;border-left:2px solid var(--go);padding-left:8px;margin-top:6px}
 .no{font-size:10px;color:var(--di);line-height:1.6;border-left:2px solid var(--bd2);padding-left:8px;margin-top:10px}
 .deduction-pill{font-size:9px;margin-top:2px;background:rgba(94,201,148,.08);border:1px solid rgba(94,201,148,.2)}
-@media(max-width:900px){.app{grid-template-columns:1fr}.sb{max-height:45vh;position:sticky;top:0;border-right:none;border-bottom:2px solid var(--bd)}.kr,.pg{grid-template-columns:1fr 1fr}.eg{grid-template-columns:1fr}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sb{max-height:40vh;position:sticky;top:0;z-index:5;border-right:none;border-bottom:2px solid var(--bd)}.kr,.pg{grid-template-columns:1fr 1fr}.eg{grid-template-columns:1fr}input[type=number]{font-size:16px;padding:10px 8px}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sb">
-  <div><div class="logo">Pensione<br><em>Complementare</em></div><div class="ls">DYNAMIC vs ACTIVITAS</div></div>
+  <div class="lang-bar">
+    <button class="lang-btn active" data-lang="it" title="Italiano">🇮🇹</button>
+    <button class="lang-btn" data-lang="en" title="English">🇬🇧</button>
+    <button class="lang-btn" data-lang="de" title="Deutsch">🇩🇪</button>
+  </div>
+  <div><div class="logo">Pension<br><em>Complementare</em></div><div class="ls">DYNAMIC vs ACTIVITAS</div></div>
   
-  <div class="ig"><div class="gl">Cliente</div>
-    <div class="fi"><label>Nome e cognome</label><div class="fr"><input type="text" id="nomeCliente" placeholder="Nome Cognome"></div></div>
+  <div class="ig"><div class="gl" data-i18n="cliente">CLIENTE</div>
+    <div class="fi"><label data-i18n="nome">Nome e cognome</label><div class="fr"><input type="text" id="nomeCliente" placeholder="Nome Cognome"></div></div>
   </div>
   
-  <div class="ig"><div class="gl">Profilo</div>
-    <div class="fi"><label>Età attuale</label><div class="fr"><input type="range" id="eta" min="20" max="62" value="35" step="1"><span class="va" id="va-eta">35 a</span></div></div>
-    <div class="fi"><label>Età pensionamento</label><div class="fr"><input type="range" id="pens" min="60" max="72" value="67" step="1"><span class="va" id="va-pens">67 a</span></div></div>
-    <div class="fi"><label>Anno primo versamento</label><div class="fr"><select id="annoInizio"></select></div></div>
+  <div class="ig"><div class="gl" data-i18n="profilo">PROFILO</div>
+    <div class="fi"><label data-i18n="eta">Età attuale</label><div class="fr"><input type="number" id="eta" value="35" min="0"><span class="va">anni</span></div></div>
+    <div class="fi"><label data-i18n="pens">Età pensionamento</label><div class="fr"><input type="number" id="pens" value="67" min="0"><span class="va">anni</span></div></div>
+    <div class="fi"><label data-i18n="annoInizio">Anno primo versamento</label><div class="fr"><input type="number" id="annoInizio" value="2016" min="1980"><span class="va"></span></div></div>
   </div>
   
-  <div class="ig"><div class="gl">Versamenti annui</div>
-    <div class="fi"><label>TFR versato al fondo</label><div class="fr"><input type="range" id="tfr" min="0" max="20000" value="3000" step="100"><span class="va" id="va-tfr">€3.000</span></div></div>
-    <div class="fi"><label>Contributo volontario annuo</label><div class="fr"><input type="range" id="con" min="0" max="100000" value="3000" step="100"><span class="va" id="va-con">€3.000</span></div></div>
-    <div class="pill deduction-pill">Limite deducibilità: <strong>€5.300</strong>/anno. Per saturarlo imposta <strong>€5.300</strong>.</div>
+  <div class="ig"><div class="gl" data-i18n="versamenti">VERSAMENTI</div>
+    <div class="fi"><label data-i18n="tfr">TFR annuo</label><div class="fr"><input type="number" id="tfr" value="3000" min="0"><span class="va">€</span></div></div>
+    <div class="fi"><label data-i18n="con">Contributo volontario annuo</label><div class="fr"><input type="number" id="con" value="3000" min="0"><span class="va">€</span></div></div>
+    <div class="pill deduction-pill" data-i18n="deduction">Limite deducibilità: <strong>€5.300</strong>/anno.</div>
   </div>
   
-  <div class="ig"><div class="gl">Straordinari</div>
-    <div class="fi"><label>Versamento spot una tantum</label><div class="fr"><input type="range" id="spot" min="0" max="5000000" value="0" step="25000"><span class="va" id="va-spot">€0</span></div></div>
-    <div class="fi"><label>Montante già accumulato</label><div class="fr"><input type="range" id="transf" min="0" max="500000" value="0" step="2500"><span class="va" id="va-transf">€0</span></div></div>
+  <div class="ig"><div class="gl" data-i18n="straordinari">STRAORDINARI</div>
+    <div class="fi"><label data-i18n="spot">Versamento spot una tantum</label><div class="fr"><input type="number" id="spot" value="0" min="0"><span class="va">€</span></div></div>
+    <div class="fi"><label data-i18n="transf">Montante già accumulato</label><div class="fr"><input type="number" id="transf" value="0" min="0"><span class="va">€</span></div></div>
   </div>
   
-  <div class="ig"><div class="gl">Ipotesi rendimento</div>
-    <div class="fi"><label>Rendimento netto Dynamic</label><div class="fr"><input type="range" id="rnet" min="1" max="12" value="6.71" step="0.25"><span class="va" id="va-rnet">6,71%</span></div></div>
-    <div class="fi"><label>Differenziale ActivITAS</label><div class="fr"><input type="range" id="gap" min="-2" max="5" value="2.34" step="0.25"><span class="va" id="va-gap">+2,34%</span></div></div>
+  <div class="ig"><div class="gl" data-i18n="rendimenti">RENDIMENTI</div>
+    <div class="fi"><label data-i18n="rnet">Rendimento netto Dynamic (%)</label><div class="fr"><input type="number" id="rnet" value="6.71" min="0" step="0.01"><span class="va">%</span></div></div>
+    <div class="fi"><label data-i18n="gap">Differenziale ActivITAS (%)</label><div class="fr"><input type="number" id="gap" value="2.34" step="0.01"><span class="va">%</span></div></div>
   </div>
   
-  <div class="ig"><div class="gl">Prestazione</div>
+  <div class="ig"><div class="gl" data-i18n="prestazione">PRESTAZIONE</div>
     <div class="pill" id="soglia-info" style="border-color:rgba(232,201,106,.25);background:var(--go2)">—</div>
-    <div class="fi"><label>% in rendita vitalizia</label><div class="fr"><input type="range" id="pctRendita" min="40" max="100" value="40" step="5"><span class="va" id="va-pctRendita">40%</span></div></div>
-    <div class="btn-full" id="btn-full-rendita">🔄 Converti tutto in rendita</div>
-    <div class="btn-export" id="btn-export">📥 Scarica riepilogo</div>
-    <div class="fi"><label>Rendimento capitale dopo</label><div class="fr"><input type="range" id="post" min="0" max="6" value="2" step="0.25"><span class="va" id="va-post">2,00%</span></div></div>
+    <div class="fi"><label data-i18n="pctRendita">% in rendita vitalizia</label><div class="fr"><input type="number" id="pctRendita" value="40" min="0" max="100"><span class="va">%</span></div></div>
+    <div class="btn-full" id="btn-full-rendita" data-i18n="btnFull">🔄 Converti tutto in rendita</div>
+    <div class="btn-export" id="btn-export" data-i18n="btnExport">📥 Scarica riepilogo</div>
+    <div class="fi"><label data-i18n="post">Rendimento capitale dopo (%)</label><div class="fr"><input type="number" id="post" value="2" min="0" step="0.01"><span class="va">%</span></div></div>
   </div>
   
-  <div class="ig"><div class="gl">RITA</div>
+  <div class="ig"><div class="gl" data-i18n="rita">RITA</div>
     <div class="fi" style="flex-direction:row;align-items:center;justify-content:space-between">
-      <label>Attiva simulazione RITA</label>
+      <label data-i18n="ritaOn">Attiva simulazione RITA</label>
       <label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer">
         <input type="checkbox" id="ritaOn"><span id="ritaToggle" style="position:absolute;inset:0;background:var(--bd2);border-radius:10px;transition:.2s"></span><span id="ritaThumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--di);border-radius:50%;transition:.2s"></span>
       </label>
     </div>
     <div id="rita-opts" style="display:none;flex-direction:column;gap:10px">
-      <div class="fi"><label>Età inizio RITA</label><div class="fr"><input type="range" id="ritaEta" min="57" max="66" value="62" step="1"><span class="va" id="va-ritaEta">62 a</span></div></div>
-      <div class="fi"><label>% in RITA <span id="rita-tipo-label" style="color:var(--go)">Totale</span></label><div class="fr"><input type="range" id="ritaPct" min="10" max="100" value="100" step="5"><span class="va" id="va-ritaPct">100%</span></div></div>
-      <div class="fi"><label>Rendimento RITA</label><div class="fr"><input type="range" id="ritaRate" min="0" max="4" value="2" step="0.25"><span class="va" id="va-ritaRate">2,00%</span></div></div>
+      <div class="fi"><label data-i18n="ritaEta">Età inizio RITA</label><div class="fr"><input type="number" id="ritaEta" value="62" min="0"><span class="va">anni</span></div></div>
+      <div class="fi"><label><span data-i18n="ritaPctLabel">% in RITA</span> <span id="rita-tipo-label" style="color:var(--go)">Totale</span></label><div class="fr"><input type="number" id="ritaPct" value="100" min="0" max="100"><span class="va">%</span></div></div>
+      <div class="fi"><label data-i18n="ritaRate">Rendimento RITA (%)</label><div class="fr"><input type="number" id="ritaRate" value="2" min="0" step="0.01"><span class="va">%</span></div></div>
     </div>
   </div>
 </aside>
@@ -131,45 +140,109 @@ input[type=text]:focus{border-color:var(--go)}
   <div class="kr">
     <div class="kp"><div class="kl">Dynamic</div><div class="kv" style="color:var(--ra)" id="kpi-r">—</div><div class="ks" id="kpi-r-s">—</div></div>
     <div class="kp"><div class="kl">ActivITAS</div><div class="kv" style="color:var(--it)" id="kpi-i">—</div><div class="ks" id="kpi-i-s">—</div></div>
-    <div class="kp"><div class="kl">Vantaggio</div><div class="kv" style="color:var(--go)" id="kpi-d">—</div><div class="ks" id="kpi-d-s">—</div></div>
-    <div class="kp"><div class="kl">Durata</div><div class="kv" style="color:var(--go)" id="kpi-a">—</div><div class="ks" id="kpi-a-s">—</div></div>
+    <div class="kp"><div class="kl" data-i18n="kpiVantaggio">Vantaggio</div><div class="kv" style="color:var(--go)" id="kpi-d">—</div><div class="ks" id="kpi-d-s">—</div></div>
+    <div class="kp"><div class="kl" data-i18n="kpiDurata">Durata</div><div class="kv" style="color:var(--go)" id="kpi-a">—</div><div class="ks" id="kpi-a-s">—</div></div>
   </div>
-  <div class="sc"><div class="sh"><span class="st">Accumulo</span><span class="sg">ACCUMULO</span></div><div class="sb2"><div style="position:relative;height:230px"><canvas id="cAccum"></canvas></div></div></div>
-  <div class="sc"><div class="sh"><span class="st">Prestazioni</span><span class="sg">60/40</span></div><div class="sb2">
+  <div class="sc"><div class="sh"><span class="st" data-i18n="accTitle">Accumulo</span><span class="sg">ACCUMULO</span></div><div class="sb2"><div style="position:relative;height:230px"><canvas id="cAccum"></canvas></div></div></div>
+  <div class="sc"><div class="sh"><span class="st" data-i18n="prestTitle">Prestazioni</span><span class="sg">60/40</span></div><div class="sb2">
     <div class="fiscal-note" id="fiscal-note">—</div>
     <div class="pg" id="pg"></div>
-    <div class="vantaggio-netto" id="vn-box" style="display:none"><span>Vantaggio netto ActivITAS</span><span class="vn-val" id="vn-val">—</span></div>
+    <div class="vantaggio-netto" id="vn-box" style="display:none"><span data-i18n="vnLabel">Vantaggio netto ActivITAS</span><span class="vn-val" id="vn-val">—</span></div>
   </div></div>
-  <div class="sc"><div class="sh"><span class="st">Capitale residuo</span><span class="sg">POST</span></div><div class="sb2">
+  <div class="sc"><div class="sh"><span class="st" data-i18n="eredTitle">Capitale residuo</span><span class="sg">POST</span></div><div class="sb2">
     <div class="rendita-opts" id="rendita-opts">
-      <div class="rendita-opt active" data-type="certa5"><span class="opt-icon">📋</span>Certa 5a<div class="coeff-info">21,50%</div></div>
-      <div class="rendita-opt" data-type="certa10"><span class="opt-icon">📋</span>Certa 10a<div class="coeff-info">11,80%</div></div>
-      <div class="rendita-opt" data-type="certa15"><span class="opt-icon">📋</span>Certa 15a<div class="coeff-info">8,50%</div></div>
-      <div class="rendita-opt" data-type="vitalizia"><span class="opt-icon">⏳</span>Vitalizia<div class="coeff-info">5,75%</div></div>
-      <div class="rendita-opt" data-type="reversibile"><span class="opt-icon">👥</span>Reversibile<div class="coeff-info">4,89%</div></div>
+      <div class="rendita-opt active" data-type="certa5"><span class="opt-icon">📋</span><span data-i18n="certa5">Certa 5a</span><div class="coeff-info">21,50%</div></div>
+      <div class="rendita-opt" data-type="certa10"><span class="opt-icon">📋</span><span data-i18n="certa10">Certa 10a</span><div class="coeff-info">11,80%</div></div>
+      <div class="rendita-opt" data-type="certa15"><span class="opt-icon">📋</span><span data-i18n="certa15">Certa 15a</span><div class="coeff-info">8,50%</div></div>
+      <div class="rendita-opt" data-type="vitalizia"><span class="opt-icon">⏳</span><span data-i18n="vitalizia">Vitalizia</span><div class="coeff-info">5,75%</div></div>
+      <div class="rendita-opt" data-type="reversibile"><span class="opt-icon">👥</span><span data-i18n="reversibile">Reversibile</span><div class="coeff-info">4,89%</div></div>
     </div>
-    <div id="reversibile-opts" class="reversibile-opts"><div class="fi"><label>Età beneficiario</label><div class="fr"><input type="range" id="etaBenef" min="50" max="80" value="60" step="1"><span class="va" id="va-etaBenef">60 a</span></div></div></div>
+    <div id="reversibile-opts" class="reversibile-opts"><div class="fi"><label data-i18n="etaBenef">Età beneficiario</label><div class="fr"><input type="number" id="etaBenef" value="60" min="0"><span class="va">anni</span></div></div></div>
     <div class="hb" id="hb"></div>
     <div class="eg" id="eg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="pill" id="eredita-pill-1">—</div><div class="pill" id="rc-pill">—</div></div>
     <div style="position:relative;height:170px;margin-top:14px"><canvas id="cEred"></canvas></div>
-    <div class="no"><strong>Avvertenza:</strong> Simulazione didattica. Verificare documenti ufficiali.</div>
+    <div class="no" data-i18n="disclaimer"><strong>Avvertenza:</strong> Simulazione didattica. Verificare documenti ufficiali.</div>
   </div></div>
-  <div class="sc" id="rita-section" style="display:none"><div class="sh"><span class="st">RITA</span><span class="sg">PRE</span></div><div class="sb2"><div id="rita-warning" class="pill" style="margin-bottom:12px;border-color:rgba(232,201,106,.3)"></div><div class="pg" id="rita-compare"></div><div style="position:relative;height:180px;margin-top:14px"><canvas id="cRita"></canvas></div></div></div>
-  <div class="footer-note">Simulatore didattico — non costituisce consulenza finanziaria.</div>
+  <div class="sc" id="rita-section" style="display:none"><div class="sh"><span class="st" data-i18n="ritaTitle">RITA</span><span class="sg">PRE</span></div><div class="sb2"><div id="rita-warning" class="pill" style="margin-bottom:12px;border-color:rgba(232,201,106,.3)"></div><div class="pg" id="rita-compare"></div><div style="position:relative;height:180px;margin-top:14px"><canvas id="cRita"></canvas></div></div></div>
+  <div class="footer-note" data-i18n="footer">Simulatore didattico — non costituisce consulenza finanziaria.</div>
 </div></main></div>
 
 <script>
-// COSTANTI
-const COEFF_VITALIZIO=0.0575, COEFF_CERTA5=0.215, COEFF_CERTA10=0.118, COEFF_CERTA15=0.085, COEFF_REVERSIBILE=0.0489;
-const CARICO=0.0225, ASSEGNO_SOCIALE=7101.12, SOGLIA_TUTTO_CAPITALE=ASSEGNO_SOCIALE/2;
-const ANNO_CORRENTE=2026, ETA_BENEF_MAX=85;
+// ============ TRADUZIONI ============
+const i18n={
+  it:{
+    cliente:'CLIENTE',nome:'Nome e cognome',profilo:'PROFILO',eta:'Età attuale',pens:'Età pensionamento',annoInizio:'Anno primo versamento',
+    versamenti:'VERSAMENTI',tfr:'TFR annuo',con:'Contributo volontario annuo',deduction:'Limite deducibilità: <strong>€5.300</strong>/anno.',
+    straordinari:'STRAORDINARI',spot:'Versamento spot una tantum',transf:'Montante già accumulato',
+    rendimenti:'RENDIMENTI',rnet:'Rendimento netto Dynamic (%)',gap:'Differenziale ActivITAS (%)',
+    prestazione:'PRESTAZIONE',pctRendita:'% in rendita vitalizia',post:'Rendimento capitale dopo (%)',
+    btnFull:'🔄 Converti tutto in rendita',btnExport:'📥 Scarica riepilogo',
+    rita:'RITA',ritaOn:'Attiva simulazione RITA',ritaEta:'Età inizio RITA',ritaPctLabel:'% in RITA',ritaRate:'Rendimento RITA (%)',
+    kpiVantaggio:'Vantaggio',kpiDurata:'Durata',
+    accTitle:'Accumulo',prestTitle:'Prestazioni',eredTitle:'Capitale residuo',
+    certa5:'Certa 5a',certa10:'Certa 10a',certa15:'Certa 15a',vitalizia:'Vitalizia',reversibile:'Reversibile',
+    etaBenef:'Età beneficiario',vnLabel:'Vantaggio netto ActivITAS',
+    ritaTitle:'RITA',disclaimer:'<strong>Avvertenza:</strong> Simulazione didattica. Verificare documenti ufficiali.',
+    footer:'Simulatore didattico — non costituisce consulenza finanziaria.',
+    rataAnnua:'RATA ANNUA',capitaleEredita:'CAPITALE + EREDITÀ',
+    tuttoCapPossibile:'✓ Tutto capitale possibile',regola6040:'⚠ Regola 60/40',
+    fiscalita:'Fiscalità:',aliquota:'aliquota',suQuotaCapitale:'su quota capitale. Rendita tassata IRPEF su 75% imponibile.',
+    anni:'anni',euro:'€','%':'%',vantaggio:'vantaggio',svantaggio:'svantaggio',
+    Dynamic:'Dynamic',ActivITAS:'ActivITAS'
+  },
+  en:{
+    cliente:'CLIENT',nome:'Full name',profilo:'PROFILE',eta:'Current age',pens:'Retirement age',annoInizio:'First contribution year',
+    versamenti:'CONTRIBUTIONS',tfr:'Annual severance (TFR)',con:'Annual voluntary contribution',deduction:'Tax deduction limit: <strong>€5,300</strong>/year.',
+    straordinari:'EXTRA',spot:'One-off lump sum',transf:'Previously accumulated',
+    rendimenti:'RETURNS',rnet:'Net return Dynamic (%)',gap:'ActivITAS spread (%)',
+    prestazione:'PAYOUT',pctRendita:'% in annuity',post:'Post-retirement return (%)',
+    btnFull:'🔄 Convert all to annuity',btnExport:'📥 Download summary',
+    rita:'RITA',ritaOn:'Enable RITA simulation',ritaEta:'RITA start age',ritaPctLabel:'% in RITA',ritaRate:'RITA return (%)',
+    kpiVantaggio:'Advantage',kpiDurata:'Duration',
+    accTitle:'Accumulation',prestTitle:'Payout',eredTitle:'Remaining capital',
+    certa5:'5yr certain',certa10:'10yr certain',certa15:'15yr certain',vitalizia:'Life annuity',reversibile:'Reversible',
+    etaBenef:'Beneficiary age',vnLabel:'Net advantage ActivITAS',
+    ritaTitle:'RITA',disclaimer:'<strong>Disclaimer:</strong> Educational simulation. Verify with official documents.',
+    footer:'Educational simulator — does not constitute financial advice.',
+    rataAnnua:'ANNUAL RATE',capitaleEredita:'CAPITAL + INHERITANCE',
+    tuttoCapPossibile:'✓ Full capital possible',regola6040:'⚠ 60/40 rule',
+    fiscalita:'Tax:',aliquota:'rate',suQuotaCapitale:'on capital. Annuity taxed annually on 75% of income.',
+    anni:'years',euro:'€','%':'%',vantaggio:'advantage',svantaggio:'disadvantage',
+    Dynamic:'Dynamic',ActivITAS:'ActivITAS'
+  },
+  de:{
+    cliente:'KUNDE',nome:'Vor- und Nachname',profilo:'PROFIL',eta:'Aktuelles Alter',pens:'Renteneintrittsalter',annoInizio:'Erster Beitragsjahr',
+    versamenti:'BEITRÄGE',tfr:'Jährliche Abfindung (TFR)',con:'Freiwilliger Jahresbeitrag',deduction:'Steuerabzugsgrenze: <strong>€5.300</strong>/Jahr.',
+    straordinari:'EXTRA',spot:'Einmalzahlung',transf:'Bereits angespartes Kapital',
+    rendimenti:'RENDITE',rnet:'Nettorendite Dynamic (%)',gap:'ActivITAS Differenz (%)',
+    prestazione:'AUSZAHLUNG',pctRendita:'% als Rente',post:'Rendite nach Renteneintritt (%)',
+    btnFull:'🔄 Alles in Rente umwandeln',btnExport:'📥 Zusammenfassung herunterladen',
+    rita:'RITA',ritaOn:'RITA-Simulation aktivieren',ritaEta:'RITA Startalter',ritaPctLabel:'% in RITA',ritaRate:'RITA Rendite (%)',
+    kpiVantaggio:'Vorteil',kpiDurata:'Dauer',
+    accTitle:'Ansparphase',prestTitle:'Auszahlung',eredTitle:'Restkapital',
+    certa5:'5J garantiert',certa10:'10J garantiert',certa15:'15J garantiert',vitalizia:'Lebensrente',reversibile:'Hinterbliebenen',
+    etaBenef:'Alter Begünstigter',vnLabel:'Nettovorteil ActivITAS',
+    ritaTitle:'RITA',disclaimer:'<strong>Hinweis:</strong> Lehrsimulation. Offizielle Dokumente prüfen.',
+    footer:'Lehrsimulator — stellt keine Finanzberatung dar.',
+    rataAnnua:'JÄHRLICHE RATE',capitaleEredita:'KAPITAL + ERBE',
+    tuttoCapPossibile:'✓ Volles Kapital möglich',regola6040:'⚠ 60/40 Regel',
+    fiscalita:'Steuer:',aliquota:'Satz',suQuotaCapitale:'auf Kapital. Rente jährlich auf 75% besteuert.',
+    anni:'Jahre',euro:'€','%':'%',vantaggio:'Vorteil',svantaggio:'Nachteil',
+    Dynamic:'Dynamic',ActivITAS:'ActivITAS'
+  }
+};
 
-// STATO
+let currentLang='it';
+function t(key){return i18n[currentLang]?.[key]||i18n.it[key]||key}
+
+// ============ COSTANTI ============
+const COEFF_VITALIZIO=0.0575, COEFF_CERTA5=0.215, COEFF_CERTA10=0.118, COEFF_CERTA15=0.085, COEFF_REVERSIBILE=0.0489;
+const CARICO=0.0225, ASSEGNO_SOCIALE=7101.12, SOGLIA_TUTTO_CAPITALE=ASSEGNO_SOCIALE/2, ANNO_CORRENTE=2026, ETA_BENEF_MAX=85;
+
 let cA=null, cE=null, cRita=null, renditaType='certa5', ultimiRisultati=null;
 
-// UTILITY
-const euro=n=>'€'+Math.round(Number(n)||0).toLocaleString('it-IT');
+const euro=n=>('€'+Math.round(Number(n)||0).toLocaleString('it-IT'));
 const compact=n=>Math.abs(n)>=1e6?'€'+(n/1e6).toFixed(2).replace('.',',')+'M':Math.abs(n)>=1e3?'€'+Math.round(n).toLocaleString('it-IT'):'€'+Math.round(n).toLocaleString('it-IT');
 const pct=n=>(Number(n)||0).toFixed(2).replace('.',',')+'%';
 const get=id=>document.getElementById(id);
@@ -186,76 +259,77 @@ function calcolaSoglia(pos){const r70=pos*0.70*COEFF_VITALIZIO;return{sottoSogli
 function calcolaRenditaAnnua(pos,pctR,tipo){return pos*(pctR/100)*getCoeff(tipo)*(1-CARICO)}
 function calcolaEredita(renditaAnnua,y,tipo,etaB){if(tipo==='vitalizia')return 0;if(tipo==='certa5')return y<5?Math.round(renditaAnnua*(5-y)):0;if(tipo==='certa10')return y<10?Math.round(renditaAnnua*(10-y)):0;if(tipo==='certa15')return y<15?Math.round(renditaAnnua*(15-y)):0;if(tipo==='reversibile'){const ar=Math.max(0,ETA_BENEF_MAX-etaB);return ar>0?Math.round(renditaAnnua*0.60*ar):0}return 0}
 
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.getAttribute('data-i18n');
+    if(el.tagName==='INPUT'||el.tagName==='SELECT') return;
+    const translation=t(key);
+    if(translation && !translation.startsWith('<')) el.textContent=translation;
+    else if(translation && translation.startsWith('<')) el.innerHTML=translation;
+  });
+}
+
+function changeLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
+  applyTranslations();
+  document.querySelector('html').setAttribute('lang',lang);
+  calc();
+}
+
 function generaExport(){
   if(!ultimiRisultati)return;const r=ultimiRisultati;
   const nomeCliente=get('nomeCliente').value.trim()||'Cliente';
   const data=new Date().toLocaleDateString('it-IT');
   const ora=new Date().toLocaleTimeString('it-IT');
-  
-  const t=`SIMULATORE PENSIONE COMPLEMENTARE
+  const t=`SIMULATORE PENSIONE COMPLEMENTARE / PENSION FUND SIMULATOR
 Dynamic vs ActivITAS
 ═══════════════════════════════════
-CLIENTE: ${nomeCliente}
-Data: ${data} · Ore: ${ora}
+${t('cliente')}: ${nomeCliente}
+Date: ${data} · Time: ${ora}
 ═══════════════════════════════════
 
-PROFILO
-  Età: ${r.eta} → ${r.pens} (${r.anniFut} anni)
-  Anni permanenza: ${r.anniPerm}
-  Aliquota fiscale: ${pct(r.aliquota)}
+${t('profilo')}
+  ${t('eta')}: ${r.eta} → ${r.pens} (${r.anniFut} ${t('anni')})
+  ${t('fiscalita')} ${t('aliquota')}: ${pct(r.aliquota)}
 
-VERSAMENTI
-  TFR annuo: ${euro(r.tfr)}
-  Contributo volontario: ${euro(r.con)}
-  Versamento spot: ${euro(r.spot)}
-  Montante pregresso: ${euro(r.transf)}
-  Totale annuo: ${euro(r.annuo)}
-  Limite deducibilità: €5.300/anno
+${t('versamenti')}
+  ${t('tfr')}: ${euro(r.tfr)}
+  ${t('con')}: ${euro(r.con)}
+  ${t('spot')}: ${euro(r.spot)}
+  ${t('transf')}: ${euro(r.transf)}
+  Totale: ${euro(r.annuo)}/${t('anni')}
 
-RENDIMENTI IPOTIZZATI
-  Dynamic: ${pct(r.rnet)}
-  ActivITAS: ${pct(r.rnetI)}
-  Differenziale: ${r.gap>=0?'+':''}${pct(r.gap)}
-
-REGOLA APPLICATA
-  ${r.tuttoCap?'Tutto capitale possibile (sotto soglia INPS)':'Regola 60/40 (sopra soglia)'}
-
-MONTANTE FINALE STIMATO
+MONTANTE FINALE / FINAL CAPITAL
   Dynamic: ${euro(r.fR)}
   ActivITAS: ${euro(r.fI)}
-  Differenza: ${r.diff>=0?'+':''}${euro(r.diff)} (${pct(Math.abs(r.diff/r.fR*100))})
+  Diff: ${r.diff>=0?'+':''}${euro(r.diff)} (${pct(Math.abs(r.diff/r.fR*100))})
 
-PRESTAZIONI (${r.pctRendita}% in rendita vitalizia)
-  Dynamic: capitale netto ${euro(r.capNetR.netto)}, rendita annua ${euro(r.renAnnuaVR)}
-  ActivITAS: capitale netto ${euro(r.capNetI.netto)}, rendita annua ${euro(r.renAnnuaVI)}
+PRESTAZIONI / PAYOUT (${r.pctRendita}% ${t('pctRendita')})
+  Dynamic: ${t('euro')} ${euro(r.capNetR.netto)} netto / ${t('euro')} ${euro(r.renAnnuaVR)} ${t('anni')}
+  ActivITAS: ${t('euro')} ${euro(r.capNetI.netto)} netto / ${t('euro')} ${euro(r.renAnnuaVI)} ${t('anni')}
 
-RATA RENDITA CERTA SELEZIONATA (${renditaType})
-  Dynamic: ${euro(r.rataCertaR)}/anno
-  ActivITAS: ${euro(r.rataCertaI)}/anno
+RATA CERTA / GUARANTEED RATE (${renditaType})
+  Dynamic: ${euro(r.rataCertaR)}/${t('anni')}
+  ActivITAS: ${euro(r.rataCertaI)}/${t('anni')}
 
-VANTAGGIO NETTO STIMATO: ${r.vantaggioNetto>=0?'+':''}${euro(r.vantaggioNetto)}
+VANTAGGIO / ADVANTAGE: ${r.vantaggioNetto>=0?'+':''}${euro(r.vantaggioNetto)}
 
 ═══════════════════════════════════
-⚠ Simulazione didattica
-Non costituisce consulenza finanziaria.
-Verificare i dati con documentazione ufficiale.
+⚠ ${t('disclaimer')}
 ═══════════════════════════════════`;
-  
   const nomeFile=nomeCliente.replace(/\s+/g,'_').normalize('NFD').replace(/[\u0300-\u036f]/g,'')+'_simulazione.txt';
   const b=new Blob([t],{type:'text/plain;charset=utf-8'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=nomeFile;a.click();URL.revokeObjectURL(u);
-  
   const btn=get('btn-export');
-  btn.textContent='✓ Scaricato!';
-  btn.style.background='rgba(94,201,148,.2)';btn.style.borderColor='var(--gr)';btn.style.color='var(--gr)';
-  setTimeout(()=>{btn.textContent='📥 Scarica riepilogo';btn.style.background='';btn.style.borderColor='';btn.style.color=''},2000);
+  btn.textContent='✓ Downloaded!';btn.style.background='rgba(94,201,148,.2)';btn.style.borderColor='var(--gr)';btn.style.color='var(--gr)';
+  setTimeout(()=>{btn.textContent=t('btnExport');btn.style.background='';btn.style.borderColor='';btn.style.color=''},2000);
 }
 
 function init(){
-  const s=get('annoInizio');
-  for(let a=ANNO_CORRENTE;a>=ANNO_CORRENTE-40;a--){const o=document.createElement('option');o.value=a;o.textContent=a;if(a===2016)o.selected=true;s.appendChild(o)}
-  
-  document.querySelectorAll('input[type=range], select').forEach(el=>el.addEventListener('input',calc));
-  
+  document.querySelectorAll('.lang-btn').forEach(btn=>btn.addEventListener('click',()=>changeLang(btn.dataset.lang)));
+  applyTranslations();
+  document.querySelectorAll('input[type=number], input[type=text]').forEach(el=>el.addEventListener('input',calc));
   get('ritaOn').addEventListener('change',function(){
     const on=this.checked;
     get('rita-opts').style.display=on?'flex':'none';
@@ -265,25 +339,16 @@ function init(){
     get('ritaThumb').style.left=on?'19px':'3px';
     calc();
   });
-  
   get('btn-full-rendita').addEventListener('click',()=>{
-    const el=get('pctRendita');
-    el.value=Number(el.value)===100?Math.max(0,Number(el.min)):100;
-    calc();
+    const el=get('pctRendita');el.value=Number(el.value)===100?Math.max(0,Number(el.min)||0):100;calc();
   });
-  
   get('btn-export').addEventListener('click',generaExport);
-  
   get('rendita-opts').addEventListener('click',e=>{
-    const opt=e.target.closest('.rendita-opt');
-    if(!opt)return;
+    const opt=e.target.closest('.rendita-opt');if(!opt)return;
     get('rendita-opts').querySelectorAll('.rendita-opt').forEach(o=>o.classList.remove('active'));
-    opt.classList.add('active');
-    renditaType=opt.dataset.type;
-    get('reversibile-opts').style.display=renditaType==='reversibile'?'flex':'none';
-    calc();
+    opt.classList.add('active');renditaType=opt.dataset.type;
+    get('reversibile-opts').style.display=renditaType==='reversibile'?'flex':'none';calc();
   });
-  
   calc();
 }
 
@@ -299,9 +364,7 @@ function calc(){
   const fR=sR[anniFut], fI=sI[anniFut];
   const sR2=calcolaSoglia(fR), sI2=calcolaSoglia(fI), tuttoCap=sR2.sottoSoglia&&sI2.sottoSoglia;
   
-  const pctMin=tuttoCap?0:40;
-  get('pctRendita').min=pctMin;
-  let pctR=Math.max(pctMin, pctRendita);
+  let pctR=Math.max(tuttoCap?0:40, pctRendita);
   if(pctR!==pctRendita) get('pctRendita').value=pctR;
   
   const capNetR=capitaleNetto(fR,pctR,aliquota), capNetI=capitaleNetto(fI,pctR,aliquota);
@@ -311,34 +374,20 @@ function calc(){
   
   ultimiRisultati={eta,pens,anniFut,anniPerm,tfr,con,annuo,spot,transf,rnet,rnetI,gap,aliquota,fR,fI,diff,pctRendita:pctR,tuttoCap,capNetR,capNetI,renAnnuaVR:renVR,renAnnuaVI:renVI,vantaggioNetto:vNetto,rataCertaR,rataCertaI};
   
-  get('va-eta').textContent=eta+' a';
-  get('va-pens').textContent=pens+' a';
-  get('va-tfr').textContent=euro(tfr);
-  get('va-con').textContent=euro(con);
-  get('va-spot').textContent=euro(spot);
-  get('va-transf').textContent=euro(transf);
-  get('va-rnet').textContent=pct(rnet);
-  get('va-gap').textContent=(gap>=0?'+':'')+pct(gap);
-  get('va-post').textContent=pct(post);
-  get('va-pctRendita').textContent=pctR+'%';
-  get('va-etaBenef').textContent=etaBenef+' a';
-  
-  get('soglia-info').innerHTML=tuttoCap?`<strong style="color:var(--gr)">✓ Tutto capitale possibile</strong><br>Rendita 70%: ${euro(sR2.rendita70)} < ${euro(SOGLIA_TUTTO_CAPITALE)}`:`<strong style="color:var(--re)">⚠ Regola 60/40</strong><br>70% rendita: ${euro(sR2.rendita70)} ≥ ${euro(SOGLIA_TUTTO_CAPITALE)}`;
+  get('soglia-info').innerHTML=tuttoCap?`<strong style="color:var(--gr)">${t('tuttoCapPossibile')}</strong><br>Rendita 70%: ${euro(sR2.rendita70)} < ${euro(SOGLIA_TUTTO_CAPITALE)}`:`<strong style="color:var(--re)">${t('regola6040')}</strong><br>70% rendita: ${euro(sR2.rendita70)} ≥ ${euro(SOGLIA_TUTTO_CAPITALE)}`;
   
   const fascia=anniPerm<=15?'15% (0-15a)':anniPerm<=35?pct(aliquota)+' (16-35a)':'9% (min)';
-  get('fiscal-note').innerHTML=`<strong>Fiscalità:</strong> aliquota <strong>${pct(aliquota)}</strong> (${fascia}) su quota capitale. Rendita tassata IRPEF su 75% imponibile.`;
+  get('fiscal-note').innerHTML=`<strong>${t('fiscalita')}</strong> ${t('aliquota')} <strong>${pct(aliquota)}</strong> (${fascia}) ${t('suQuotaCapitale')}`;
   
   const btnFull=get('btn-full-rendita');
-  if(pctR===100){btnFull.classList.add('active-rendita');btnFull.textContent='✓ Tutto in rendita'}else{btnFull.classList.remove('active-rendita');btnFull.textContent='🔄 Converti tutto in rendita'}
+  if(pctR===100){btnFull.classList.add('active-rendita');btnFull.textContent='✓ Tutto in rendita'}else{btnFull.classList.remove('active-rendita');btnFull.textContent=t('btnFull')}
   
-  get('kpi-r').textContent=compact(fR);
-  get('kpi-r-s').textContent='aliquota '+pct(aliquota);
-  get('kpi-i').textContent=compact(fI);
-  get('kpi-i-s').textContent='aliquota '+pct(aliquota);
+  get('kpi-r').textContent=compact(fR);get('kpi-r-s').textContent=t('aliquota')+' '+pct(aliquota);
+  get('kpi-i').textContent=compact(fI);get('kpi-i-s').textContent=t('aliquota')+' '+pct(aliquota);
   get('kpi-d').textContent=(diff>=0?'+':'')+compact(diff);
-  get('kpi-d-s').textContent=(diff>=0?'vantaggio ':'svantaggio ')+pct(Math.abs(diff/fR*100));
-  get('kpi-a').textContent=anniFut+' anni';
-  get('kpi-a-s').textContent=euro(annuo)+'/anno · '+anniPerm+'a';
+  get('kpi-d-s').textContent=(diff>=0?t('vantaggio')+' ':'')+pct(Math.abs(diff/fR*100));
+  get('kpi-a').textContent=anniFut+' '+t('anni');
+  get('kpi-a-s').textContent=euro(annuo)+'/'+t('anni')+' · '+anniPerm+'a';
   
   get('vn-box').style.display=diff>0?'flex':'none';
   if(diff>0) get('vn-val').textContent=(vNetto>=0?'+':'')+compact(vNetto);
@@ -349,20 +398,18 @@ function calc(){
   cA=new Chart(get('cAccum'),{type:'line',data:{labels,datasets:[
     {label:'Dynamic',data:sR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,.05)',fill:true,pointRadius:0,borderWidth:2,tension:.4},
     {label:'ActivITAS',data:sI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,.05)',fill:true,pointRadius:0,borderWidth:2,tension:.4},
-    {label:'Versamenti',data:sPuri,borderColor:'rgba(79,77,74,.6)',backgroundColor:'transparent',pointRadius:0,borderWidth:1,borderDash:[3,4]}
+    {label:t('versamenti'),data:sPuri,borderColor:'rgba(79,77,74,.6)',backgroundColor:'transparent',pointRadius:0,borderWidth:1,borderDash:[3,4]}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}}},x:{ticks:{maxTicksLimit:9,color:'#4f4d4a',font:{size:10}},grid:{display:false}}}}});
   
   get('pg').innerHTML=pCard(fR,'DYNAMIC','r',aliquota,pctR)+pCard(fI,'ACTIVITAS','i',aliquota,pctR);
-  
   renderEredita(pens,fR,fI,pctR,post,etaBenef);
-  
   if(get('ritaOn').checked) calcRita(eta,pens,anniFut,annuo,rnet,rnetI,sR,sI,pctR,aliquota);
 }
 
 function pCard(pos,nome,cls,alq,pctR){
   const cap=capitaleNetto(pos,pctR,alq),ren=pos*pctR/100,netRen=ren*(1-CARICO),annRen=netRen*COEFF_VITALIZIO,mesRen=annRen/12,isFull=pctR===100;
   return `<div class="pc"><div style="font-size:10px;letter-spacing:.07em;margin-bottom:8px;color:${cls==='r'?'var(--ra)':'var(--it)'};font-family:monospace">${nome}</div>
-  <div class="pr"><span class="prl">Posizione totale</span><span class="prv">${euro(pos)}</span></div>
+  <div class="pr"><span class="prl">Posizione</span><span class="prv">${euro(pos)}</span></div>
   ${isFull?`<div class="pr"><span class="prl" style="color:var(--re)">Capitale</span><span class="prv" style="color:var(--re)">€0</span></div>`:`
   <div class="pr"><span class="prl" style="color:var(--go)">${cap.pctCapitale}% capitale lordo</span><span class="prv" style="color:var(--go)">${euro(cap.lordo)}</span></div>
   <div class="pr"><span class="prl" style="color:var(--re)">Tassazione (${pct(cap.aliquota)})</span><span class="prv" style="color:var(--re)">−${euro(cap.tassazione)}</span></div>
@@ -374,47 +421,37 @@ function pCard(pos,nome,cls,alq,pctR){
 }
 
 function renderEredita(pens,fR,fI,pctRendita,post,etaBenef){
-  const pctCap=100-pctRendita;
-  const coeffE=getCoeff(renditaType);
-  const rataR=calcolaRenditaAnnua(fR,pctRendita,renditaType);
-  const rataI=calcolaRenditaAnnua(fI,pctRendita,renditaType);
-  
+  const pctCap=100-pctRendita,coeffE=getCoeff(renditaType);
+  const rataR=calcolaRenditaAnnua(fR,pctRendita,renditaType),rataI=calcolaRenditaAnnua(fI,pctRendita,renditaType);
   const eL=[],eTotR=[],eTotI=[],eCap=[],eCI=[],eErR=[],eErI=[];
   for(let a=pens;a<=105;a++){
     const y=a-pens;
-    const cR=Math.round(fR*(pctCap/100)*Math.pow(1+post/100,y));
-    const cI=Math.round(fI*(pctCap/100)*Math.pow(1+post/100,y));
+    const cR=Math.round(fR*(pctCap/100)*Math.pow(1+post/100,y)),cI=Math.round(fI*(pctCap/100)*Math.pow(1+post/100,y));
     const eb=etaBenef+y;
-    const erR=calcolaEredita(rataR,y,renditaType,eb);
-    const erI=calcolaEredita(rataI,y,renditaType,eb);
+    const erR=calcolaEredita(rataR,y,renditaType,eb),erI=calcolaEredita(rataI,y,renditaType,eb);
     eL.push(a+'');eCap.push(cR);eCI.push(cI);eErR.push(erR);eErI.push(erI);eTotR.push(cR+erR);eTotI.push(cI+erI);
   }
-  
   const maxV=Math.max(...eTotR,...eTotI);
   
   get('hb').innerHTML=[80,90,100].map(age=>{
     const i=age-pens;if(i<0)return'';
-    const tR=eTotR[i],tI=eTotI[i];
-    const pR=maxV?Math.round(tR/maxV*100):0,pI=maxV?Math.round(tI/maxV*100):0;
+    const tR=eTotR[i],tI=eTotI[i],pR=maxV?Math.round(tR/maxV*100):0,pI=maxV?Math.round(tI/maxV*100):0;
     return `<div class="hbr"><span class="hbn">età ${age}</span><div style="flex:1;display:flex;flex-direction:column;gap:4px"><div class="hbt"><div class="hbf" style="width:${pR}%;background:var(--ra)"></div></div><div class="hbt"><div class="hbf" style="width:${pI}%;background:var(--it)"></div></div></div><div class="hbv"><span style="color:var(--ra)">${compact(tR)}</span> · <span style="color:var(--it)">${compact(tI)}</span></div></div>`;
   }).join('');
   
   get('eg').innerHTML=[80,90,100].map(age=>{
     const i=age-pens;if(i<0)return`<div class="ec"><div class="el">Età ${age}</div><div class="ev" style="color:var(--di)">—</div></div>`;
-    return `<div class="ec">
-      <div class="el">Età ${age}</div>
-      <div style="font-size:8px;color:var(--gr);margin-bottom:2px">RATA ANNUA</div>
+    return `<div class="ec"><div class="el">Età ${age}</div>
+      <div style="font-size:8px;color:var(--gr);margin-bottom:2px">${t('rataAnnua')}</div>
       <div style="font-size:12px;color:var(--gr);font-weight:600">${euro(rataR)}</div><div style="font-size:8px;color:var(--ra)">Dynamic</div>
       <div style="font-size:12px;color:var(--gr);font-weight:600">${euro(rataI)}</div><div style="font-size:8px;color:var(--it);margin-bottom:6px">ActivITAS</div>
-      <div style="font-size:8px;color:var(--go);margin-bottom:2px">CAPITALE + EREDITÀ</div>
+      <div style="font-size:8px;color:var(--go);margin-bottom:2px">${t('capitaleEredita')}</div>
       <div style="font-size:10px;color:var(--ra)">${compact(eCap[i])} + ${compact(eErR[i])}</div>
-      <div style="font-size:10px;color:var(--it)">${compact(eCI[i])} + ${compact(eErI[i])}</div>
-    </div>`;
+      <div style="font-size:10px;color:var(--it)">${compact(eCI[i])} + ${compact(eErI[i])}</div></div>`;
   }).join('');
   
   const cl=(coeffE*100).toFixed(2)+'%';
-  const tl={vitalizia:`<strong>Vitalizia</strong> · Rata: <strong style="color:var(--gr)">${euro(rataR)}</strong>/anno · Coeff: ${cl}`,certa5:`<strong>Certa 5a</strong> · Rata: <strong style="color:var(--gr)">${euro(rataR)}</strong>/anno · Coeff: ${cl}`,certa10:`<strong>Certa 10a</strong> · Rata: <strong style="color:var(--gr)">${euro(rataR)}</strong>/anno · Coeff: ${cl}`,certa15:`<strong>Certa 15a</strong> · Rata: <strong style="color:var(--gr)">${euro(rataR)}</strong>/anno · Coeff: ${cl}`,reversibile:`<strong>Reversibile</strong> · Rata: <strong style="color:var(--gr)">${euro(rataR)}</strong>/anno · Coeff: ${cl}`};
-  get('eredita-pill-1').innerHTML=tl[renditaType]||tl.certa5;
+  get('eredita-pill-1').innerHTML=`<strong>${renditaType}</strong> · Rata: <strong style="color:var(--gr)">${euro(rataR)}</strong>/anno · Coeff: ${cl}`;
   get('rc-pill').innerHTML=`<strong>Rata annuale</strong><br><span style="color:var(--ra)">Dynamic: ${euro(rataR)}/anno</span><br><span style="color:var(--it)">ActivITAS: ${euro(rataI)}/anno</span>`;
   
   safeDestroy(cE);
@@ -426,18 +463,13 @@ function renderEredita(pens,fR,fI,pctRendita,post,etaBenef){
 
 function calcRita(eta,pens,anniFut,annuo,rnet,rnetI,sR,sI,pctRendita,aliquota){
   const ritaEta=val('ritaEta'),ritaPct=val('ritaPct'),ritaRate=val('ritaRate');
-  get('va-ritaEta').textContent=ritaEta+' a';get('va-ritaPct').textContent=ritaPct+'%';get('va-ritaRate').textContent=pct(ritaRate);
   get('rita-tipo-label').textContent=ritaPct===100?'Totale':'Parziale ('+ritaPct+'%)';
-  
-  const durAnni=Math.max(1,pens-ritaEta), durMesi=durAnni*12, idx=Math.max(0,Math.min(ritaEta-eta,anniFut));
-  const posR=sR[idx], posI=sI[idx], quotaR=posR*ritaPct/100, quotaI=posI*ritaPct/100, mr=ritaRate/100/12;
-  const rataR=rataRITA(quotaR,durMesi,mr), rataI=rataRITA(quotaI,durMesi,mr);
-  
-  let rimR=posR*(1-ritaPct/100), rimI=posI*(1-ritaPct/100);
+  const durAnni=Math.max(1,pens-ritaEta),durMesi=durAnni*12,idx=Math.max(0,Math.min(ritaEta-eta,anniFut));
+  const posR=sR[idx],posI=sI[idx],quotaR=posR*ritaPct/100,quotaI=posI*ritaPct/100,mr=ritaRate/100/12;
+  const rataR=rataRITA(quotaR,durMesi,mr),rataI=rataRITA(quotaI,durMesi,mr);
+  let rimR=posR*(1-ritaPct/100),rimI=posI*(1-ritaPct/100);
   for(let y=0;y<durAnni;y++){rimR=rimR*(1+rnet/100)+annuo;rimI=rimI*(1+rnetI/100)+annuo}
-  
-  get('rita-warning').innerHTML=ritaEta<57?'<strong style="color:var(--re)">⚠ Minimo 57 anni</strong>':ritaEta<pens-5?'<strong style="color:var(--re)">⚠ Fuori finestra 5 anni</strong>':'<strong style="color:var(--go)">✓ Finestra rispettata</strong>';
-  
+  get('rita-warning').innerHTML=ritaEta<57?'<strong style="color:var(--re)">⚠ Min 57 anni</strong>':ritaEta<pens-5?'<strong style="color:var(--re)">⚠ Fuori finestra 5 anni</strong>':'<strong style="color:var(--go)">✓ Finestra rispettata</strong>';
   const isTot=ritaPct===100;
   get('rita-compare').innerHTML=
     `<div class="pc"><div style="font-size:10px;color:var(--ra);margin-bottom:8px;font-family:monospace">DYNAMIC</div>
@@ -454,7 +486,6 @@ function calcRita(eta,pens,anniFut,annuo,rnet,rnetI,sR,sI,pctRendita,aliquota){
       <div class="pr"><span class="prl">Totale erogato</span><span class="prv">${euro(rataI*durMesi)}</span></div>
       ${isTot?`<div class="pr"><span class="prl">Al pensionamento</span><span class="prv" style="color:var(--di)">€0</span></div>`:`<div class="pr"><span class="prl">Residuo</span><span class="prv">${euro(rimI)}</span></div><div class="pr"><span class="prl">Capitale</span><span class="prv" style="color:var(--go)">${euro(rimI*(1-pctRendita/100))}</span></div><div class="pr"><span class="prl">Rendita annua</span><span class="prv" style="color:var(--gr)">${euro(rimI*(pctRendita/100)*(1-CARICO)*COEFF_VITALIZIO)}</span></div>`}
     </div>`;
-  
   const labels=[],dataR=[],dataI=[];
   for(let m=0;m<=durMesi;m++){labels.push(m%12===0?(ritaEta+Math.floor(m/12))+'a':'');dataR.push(Math.round(decumuloResiduo(quotaR,rataR,m,mr)));dataI.push(Math.round(decumuloResiduo(quotaI,rataI,m,mr)))}
   safeDestroy(cRita);
