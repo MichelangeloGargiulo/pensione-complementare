@@ -7,442 +7,172 @@
 <meta name="description" content="Confronto didattico fondi pensione Dynamic (Raiffeisen) vs ActivITAS (ITAS). Simula accumulo, RITA, rendita ed eredità.">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-:root{
-  --bg:#0d0e10;--sf:#15171b;--sf2:#1c1f25;
-  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.13);
-  --tx:#ede9e3;--mu:#888480;--di:#4f4d4a;
-  --ra:#4f9cf9;--ra2:rgba(79,156,249,0.13);
-  --it:#f97b4f;--it2:rgba(249,123,79,0.13);
-  --go:#e8c96a;--go2:rgba(232,201,106,0.11);
-  --gr:#5ec994;--re:#f06b6b;
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5}
-.app{display:grid;grid-template-columns:310px 1fr;min-height:100vh}
-.sb{background:var(--sf);border-right:1px solid var(--bd);padding:22px 18px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}
-.logo{font-family:Georgia,serif;font-size:16px;line-height:1.2}.logo em{color:var(--go);font-style:italic}
-.ls,.gl,.kl,.sg,.pf,.el,.rm-label{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-.ls{font-size:9px;color:var(--di);letter-spacing:.1em;margin-top:2px}.gl{font-size:9px;letter-spacing:.1em;color:var(--di);text-transform:uppercase;padding-bottom:5px;border-bottom:1px solid var(--bd);margin-bottom:2px}
-.ig{display:flex;flex-direction:column;gap:11px}.fi{display:flex;flex-direction:column;gap:4px}.fi label{font-size:11px;color:var(--mu)}.fr{display:flex;align-items:center;gap:8px}
-select{background:var(--sf2);color:var(--tx);border:1px solid var(--bd2);border-radius:5px;padding:5px 8px;font-size:11px;font-family:inherit;cursor:pointer;width:100%}
-select:focus{outline:none;border-color:var(--go)}
-input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--bd2);border-radius:2px;outline:none}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--go);cursor:pointer;border:2px solid var(--bg)}
-.va{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;color:var(--tx);min-width:70px;text-align:right}
-.diff-box{background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;padding:14px 14px 10px}.diff-title{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--di);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;margin-bottom:10px}.diff-fund{display:flex;justify-content:space-between;align-items:center;padding:5px 0}.df-name{font-size:11px}.df-val{font-family:Georgia,serif;font-size:18px}.diff-gap{margin-top:8px;padding-top:8px;border-top:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;font-size:11px}.gap-label{color:var(--mu)}.gap-val{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;font-weight:500;color:var(--go)}
-.pill{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font-size:10px;color:var(--mu);line-height:1.6}.pill strong{color:var(--tx)}
-.mn{overflow-y:auto;background:var(--bg)}.mi{padding:22px;display:flex;flex-direction:column;gap:18px}.kr{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kp{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:12px 14px}.kl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:4px}.kv{font-family:Georgia,serif;font-size:20px;line-height:1}.ks{font-size:9px;color:var(--di);margin-top:2px}
-.sc{background:var(--sf);border:1px solid var(--bd);border-radius:11px;overflow:hidden}.sh{padding:11px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}.st{font-size:12px;font-weight:500}.sg{font-size:9px;background:var(--sf2);border:1px solid var(--bd2);border-radius:3px;padding:2px 6px;color:var(--mu)}.sb2{padding:16px}
-.pg{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pc{border:1px solid var(--bd);border-radius:8px;padding:12px;background:var(--sf2)}.pf{font-size:9px;letter-spacing:.07em;margin-bottom:8px}.pr{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid var(--bd);font-size:11px}.pr:last-child{border-bottom:none}.prl{color:var(--mu)}.prv{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;font-weight:500}
-.eg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}.ec{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:11px;text-align:center}.el{font-size:9px;color:var(--di);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}.ev{font-family:Georgia,serif;font-size:17px}.no{font-size:10px;color:var(--di);line-height:1.6;border-left:2px solid var(--bd2);padding-left:8px;margin-top:10px}.no strong{color:var(--mu)}
-.hb{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.hbr{display:flex;align-items:center;gap:10px}.hbn{font-size:10px;color:var(--mu);width:60px;flex-shrink:0}.hbt{flex:1;height:5px;background:var(--bd);border-radius:3px;overflow:hidden}.hbf{height:100%;border-radius:3px;transition:width .3s}.hbv{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:10px;width:110px;text-align:right;flex-shrink:0}.legend{display:flex;gap:14px;font-size:10px;color:var(--mu);margin-bottom:12px}.ld{width:10px;height:3px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}
-.rita-kpi{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:13px}.rita-kpi .kp{background:var(--go2);border-color:rgba(232,201,106,0.25)}.rita-row{display:flex;justify-content:space-between;align-items:baseline;padding:4px 0;border-bottom:1px solid var(--bd);font-size:11px}.rita-row:last-child{border-bottom:none}.rrl{color:var(--mu)}.rrv{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:11px;font-weight:500}.rita-month{display:flex;align-items:center;gap:12px;background:var(--go2);border:1px solid rgba(232,201,106,0.3);border-radius:8px;padding:12px 14px;margin-bottom:12px}.rm-label{font-size:10px;color:var(--go);letter-spacing:.06em}.rm-val{font-family:Georgia,serif;font-size:22px;color:var(--go)}.rita-compare{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rc-card{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:12px}
-.footer-note{font-size:10px;color:var(--di);line-height:1.6;text-align:center;padding:8px 0 2px}
-.tax-row{border-top:1px dashed var(--bd2);margin-top:4px;padding-top:6px}
-.rendita-opts{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.rendita-opt{flex:1;min-width:80px;background:var(--sf2);border:1px solid var(--bd2);border-radius:6px;padding:8px 10px;text-align:center;cursor:pointer;font-size:10px;color:var(--mu);transition:all .2s;user-select:none}
-.rendita-opt.active{border-color:var(--go);background:var(--go2);color:var(--tx)}
-.rendita-opt .opt-icon{font-size:16px;display:block;margin-bottom:3px}
-.vantaggio-netto{background:var(--sf2);border:1px solid rgba(232,201,106,0.2);border-radius:8px;padding:10px 14px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;font-size:11px}
-.vn-label{color:var(--mu)}.vn-val{font-family:Georgia,serif;font-size:16px;color:var(--go)}
-.tooltip-trigger{border-bottom:1px dashed var(--mu);cursor:help}
-.aliquota-info{font-size:9px;color:var(--gr);margin-top:4px;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
-.rendita-100-badge{font-size:10px;color:var(--re);font-weight:500;margin-top:4px}
+:root{--bg:#0d0e10;--sf:#15171b;--sf2:#1c1f25;--bd:rgba(255,255,255,.07);--bd2:rgba(255,255,255,.13);--tx:#ede9e3;--mu:#888480;--di:#4f4d4a;--ra:#4f9cf9;--it:#f97b4f;--go:#e8c96a;--go2:rgba(232,201,106,.11);--gr:#5ec994;--re:#f06b6b}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;font-size:14px;line-height:1.5}.app{display:grid;grid-template-columns:310px 1fr;min-height:100vh}.sb{background:var(--sf);border-right:1px solid var(--bd);padding:22px 18px;display:flex;flex-direction:column;gap:20px;overflow-y:auto}.logo{font-family:Georgia,serif;font-size:16px;line-height:1.2}.logo em{color:var(--go);font-style:italic}.ls,.gl,.kl,.sg,.pf,.el,.rm-label,.va,.prv,.rrv,.hbv{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}.ls{font-size:9px;color:var(--di);letter-spacing:.1em;margin-top:2px}.gl{font-size:9px;letter-spacing:.1em;color:var(--di);text-transform:uppercase;padding-bottom:5px;border-bottom:1px solid var(--bd);margin-bottom:2px}.ig{display:flex;flex-direction:column;gap:11px}.fi{display:flex;flex-direction:column;gap:4px}.fi label{font-size:11px;color:var(--mu)}.fr{display:flex;align-items:center;gap:8px}select,input[type=range]{outline:none}select{background:var(--sf2);color:var(--tx);border:1px solid var(--bd2);border-radius:5px;padding:5px 8px;font-size:11px;width:100%;cursor:pointer}input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--bd2);border-radius:2px}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--go);cursor:pointer;border:2px solid var(--bg);transition:transform .15s}input[type=range]::-webkit-slider-thumb:active{transform:scale(1.2)}.va{font-size:12px;color:var(--tx);min-width:75px;text-align:right}.pill{background:var(--sf2);border:1px solid var(--bd);border-radius:6px;padding:8px 10px;font-size:10px;color:var(--mu);line-height:1.6}.pill strong{color:var(--tx)}.diff-box{background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;padding:14px 14px 10px}.diff-title{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--di);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;margin-bottom:10px}.diff-fund{display:flex;justify-content:space-between;align-items:center;padding:5px 0}.df-name{font-size:11px}.df-val{font-family:Georgia,serif;font-size:18px}.diff-gap{margin-top:8px;padding-top:8px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;font-size:11px}.gap-label{color:var(--mu)}.gap-val{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:12px;color:var(--go)}.btn-full,.btn-export{display:inline-block;border-radius:5px;padding:6px 12px;font-size:10px;cursor:pointer;text-align:center;user-select:none;transition:all .2s}.btn-full{background:rgba(94,201,148,.12);border:1px solid rgba(94,201,148,.35);color:var(--gr)}.btn-full:hover{border-color:var(--gr);background:rgba(94,201,148,.2)}.btn-full.active-rendita{background:rgba(94,201,148,.25);border-color:var(--gr);color:var(--tx);font-weight:600}.btn-export{background:rgba(79,156,249,.12);border:1px solid rgba(79,156,249,.3);color:var(--ra);margin-top:6px}.btn-export:hover{background:rgba(79,156,249,.2);border-color:var(--ra)}.btn-export.exported{background:rgba(94,201,148,.2);border-color:var(--gr);color:var(--gr)}.spot-badge{display:inline-block;background:rgba(232,201,106,.15);border:1px solid rgba(232,201,106,.3);border-radius:4px;padding:2px 6px;font-size:9px;color:var(--go);margin-left:6px}.mn{overflow-y:auto;background:var(--bg)}.mi{padding:22px;display:flex;flex-direction:column;gap:18px}.kr{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.kp{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:12px 14px}.kl{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:4px}.kv{font-family:Georgia,serif;font-size:20px;line-height:1}.ks{font-size:9px;color:var(--di);margin-top:2px}.sc{background:var(--sf);border:1px solid var(--bd);border-radius:11px;overflow:hidden}.sh{padding:11px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}.st{font-size:12px;font-weight:500}.sg{font-size:9px;background:var(--sf2);border:1px solid var(--bd2);border-radius:3px;padding:2px 6px;color:var(--mu)}.sb2{padding:16px}.pg,.rita-compare{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pc,.rc-card{border:1px solid var(--bd);border-radius:8px;padding:12px;background:var(--sf2)}.pf{font-size:9px;letter-spacing:.07em;margin-bottom:8px}.pr,.rita-row{display:flex;justify-content:space-between;align-items:baseline;padding:3px 0;border-bottom:1px solid var(--bd);font-size:11px}.pr:last-child,.rita-row:last-child{border-bottom:none}.prl,.rrl{color:var(--mu)}.prv,.rrv{font-size:11px;font-weight:500}.eg{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:12px}.ec{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:11px;text-align:center}.el{font-size:9px;color:var(--di);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}.ev{font-family:Georgia,serif;font-size:17px}.no{font-size:10px;color:var(--di);line-height:1.6;border-left:2px solid var(--bd2);padding-left:8px;margin-top:10px}.no strong{color:var(--mu)}.hb{display:flex;flex-direction:column;gap:8px;margin-bottom:14px}.hbr{display:flex;align-items:center;gap:10px}.hbn{font-size:10px;color:var(--mu);width:60px;flex-shrink:0}.hbt{flex:1;height:5px;background:var(--bd);border-radius:3px;overflow:hidden}.hbf{height:100%;border-radius:3px}.hbv{font-size:10px;width:110px;text-align:right;flex-shrink:0}.legend{display:flex;gap:14px;font-size:10px;color:var(--mu);margin-bottom:12px;flex-wrap:wrap}.ld{width:10px;height:3px;border-radius:2px;display:inline-block;margin-right:4px;vertical-align:middle}.rita-month{display:flex;align-items:center;gap:12px;background:var(--go2);border:1px solid rgba(232,201,106,.3);border-radius:8px;padding:12px 14px;margin-bottom:12px;flex-wrap:wrap}.rm-label{font-size:10px;color:var(--go);letter-spacing:.06em}.rm-val{font-family:Georgia,serif;font-size:22px}.rendita-opts{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}.rendita-opt{flex:1;min-width:65px;background:var(--sf2);border:1px solid var(--bd2);border-radius:6px;padding:8px 6px;text-align:center;cursor:pointer;font-size:9px;color:var(--mu);user-select:none;transition:all .2s}.rendita-opt:hover{border-color:var(--mu)}.rendita-opt.active{border-color:var(--go);background:var(--go2);color:var(--tx)}.opt-icon{font-size:15px;display:block;margin-bottom:2px}.coeff-info{font-size:8px;color:var(--gr);margin-top:2px}.reversibile-opts{display:none;flex-direction:column;gap:8px;margin-top:8px;padding:10px;background:var(--sf2);border:1px solid var(--bd);border-radius:6px}.vantaggio-netto{background:var(--sf2);border:1px solid rgba(232,201,106,.2);border-radius:8px;padding:10px 14px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;font-size:11px;flex-wrap:wrap;gap:8px}.vn-label{color:var(--mu)}.vn-val{font-family:Georgia,serif;font-size:16px;color:var(--go)}.tooltip-trigger{border-bottom:1px dashed var(--mu);cursor:help;position:relative}.tooltip-trigger:hover .tooltip-text{display:block}.tooltip-text{display:none;position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:var(--sf);border:1px solid var(--bd2);border-radius:6px;padding:8px 12px;font-size:10px;color:var(--tx);white-space:nowrap;z-index:10;pointer-events:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-weight:400;letter-spacing:0}.footer-note{font-size:10px;color:var(--di);line-height:1.6;text-align:center;padding:8px 0 2px}.fiscal-note{font-size:9px;color:var(--di);line-height:1.5;border-left:2px solid var(--go);padding-left:8px;margin-top:6px}
 
-@media(max-width:900px){.app{grid-template-columns:1fr}.sb{border-right:none;border-bottom:1px solid var(--bd);max-height:none}.kr,.pg,.eg,.rita-compare{grid-template-columns:1fr}.mi{padding:14px}.hbv{width:95px}.rita-month{align-items:flex-start;flex-direction:column}.rendita-opts{flex-direction:column}}
+/* MOBILE IMPROVEMENTS */
+@media(max-width:1050px){.app{grid-template-columns:280px 1fr}.sb{padding:16px 12px;gap:14px}.mi{padding:16px;gap:14px}.kv{font-size:17px}}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sb{position:sticky;top:0;z-index:5;border-right:none;border-bottom:2px solid var(--bd);max-height:45vh;padding:14px 12px;gap:10px}.mi{padding:12px;gap:12px}.kr{grid-template-columns:repeat(2,1fr)}.pg,.eg,.rita-compare{grid-template-columns:1fr}.hbv{width:80px;font-size:9px}.hbn{width:45px;font-size:9px}.rendita-opts{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}.rendita-opt{flex:0 0 auto;min-width:55px;font-size:8px;padding:6px 5px}.opt-icon{font-size:13px}.kv{font-size:15px}.rita-month{flex-direction:column;align-items:flex-start}.sc .sh{flex-direction:column;align-items:flex-start;gap:4px}}
+@media(max-width:480px){.sb{max-height:50vh;padding:10px 8px}.logo{font-size:14px}.kr{grid-template-columns:1fr 1fr;gap:6px}.kp{padding:8px 10px}.kl{font-size:8px}.kv{font-size:14px}.st{font-size:11px}.rendita-opt{min-width:48px;font-size:7px;padding:5px 4px}.opt-icon{font-size:11px}.coeff-info{font-size:7px}.hbv{width:65px;font-size:8px}}
 </style>
 </head>
 <body>
 <div class="app">
 <aside class="sb">
   <div><div class="logo">Pensione<br><em>Complementare</em></div><div class="ls">DYNAMIC vs ACTIVITAS · SIMULATORE</div></div>
-  <div class="ig"><div class="gl">Profilo</div><div class="fi"><label>Età attuale</label><div class="fr"><input type="range" id="eta" min="20" max="62" step="1" value="35"><span class="va" id="va-eta">35 a</span></div></div><div class="fi"><label>Età pensionamento</label><div class="fr"><input type="range" id="pens" min="60" max="72" step="1" value="67"><span class="va" id="va-pens">67 a</span></div></div><div class="fi"><label>Anno primo versamento</label><div class="fr"><select id="annoInizio"></select></div></div></div>
-  <div class="ig"><div class="gl">Versamenti annui</div><div class="fi"><label>TFR versato al fondo</label><div class="fr"><input type="range" id="tfr" min="0" max="20000" step="100" value="3000"><span class="va" id="va-tfr">€3.000</span></div></div><div class="fi"><label>Contributo volontario</label><div class="fr"><input type="range" id="con" min="0" max="50000" step="250" value="1200"><span class="va" id="va-con">€1.200</span></div></div></div>
-  <div class="ig"><div class="gl">Trasferimento da altro fondo</div><div class="fi"><label>Montante già accumulato</label><div class="fr"><input type="range" id="transf" min="0" max="500000" step="2500" value="0"><span class="va" id="va-transf">€0</span></div></div><div class="pill">Il montante entra subito come quota iniziale e cresce dal primo anno.</div></div>
-  <div class="ig"><div class="gl">Ipotesi rendimento</div><div class="fi"><label>Rendimento netto atteso · Dynamic</label><div class="fr"><input type="range" id="rnet" min="1" max="12" step="0.25" value="6.71"><span class="va" id="va-rnet">6,71%</span></div></div><div class="diff-box"><div class="diff-title">Rendimenti netti applicati</div><div class="diff-fund"><span class="df-name" style="color:var(--ra)">▪ Dynamic · Raiffeisen</span><span class="df-val" style="color:var(--ra)" id="show-r">6,71%</span></div><div class="diff-fund"><span class="df-name" style="color:var(--it)">▪ ActivITAS · ITAS</span><span class="df-val" style="color:var(--it)" id="show-i">9,05%</span></div><div class="diff-gap"><span class="gap-label">Differenziale storico fisso</span><span class="gap-val" id="show-gap">+2,34%</span></div></div><div class="fi"><label>Differenziale ActivITAS − Dynamic</label><div class="fr"><input type="range" id="gap" min="-2" max="5" step="0.25" value="2.34"><span class="va" id="va-gap">+2,34%</span></div></div><div class="pill">Ipotesi di lavoro basata sui rendimenti netti storici indicati: <strong style="color:var(--ra)">Dynamic +6,71%</strong>, <strong style="color:var(--it)">ActivITAS +9,05%</strong>, differenziale <strong style="color:var(--go)">+2,34%</strong>. Non è una garanzia di rendimento futuro.</div></div>
-  <div class="ig"><div class="gl">Fiscalità</div><div class="pill" id="fiscalita-info">Calcolo automatico in base agli anni di permanenza</div></div>
-  <div class="ig"><div class="gl">Post-pensionamento</div><div class="fi"><label>Percentuale in rendita vitalizia</label><div class="fr"><input type="range" id="pctRendita" min="20" max="100" step="5" value="40"><span class="va" id="va-pctRendita">40%</span></div></div><div class="fi"><label>Rendimento capitale riscattato investito</label><div class="fr"><input type="range" id="post" min="0" max="6" step="0.25" value="2"><span class="va" id="va-post">2,00%</span></div></div></div>
-  <div class="ig"><div class="gl">RITA</div><div class="fi" style="flex-direction:row;align-items:center;justify-content:space-between"><label>Attiva simulazione RITA</label><label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer"><input type="checkbox" id="ritaOn" style="opacity:0;width:0;height:0;position:absolute"><span id="ritaToggle" style="position:absolute;top:0;left:0;right:0;bottom:0;background:var(--bd2);border-radius:10px;transition:.2s"></span><span id="ritaThumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--di);border-radius:50%;transition:.2s"></span></label></div><div id="rita-opts" style="display:none;flex-direction:column;gap:10px"><div class="fi"><label>Età inizio RITA</label><div class="fr"><input type="range" id="ritaEta" min="57" max="66" step="1" value="62"><span class="va" id="va-ritaEta">62 a</span></div></div><div class="fi"><label style="display:flex;justify-content:space-between">Tipo RITA <span id="rita-tipo-label" style="color:var(--go)">Totale</span></label><div class="fr"><input type="range" id="ritaPct" min="10" max="100" step="5" value="100"><span class="va" id="va-ritaPct">100%</span></div></div><div class="fi"><label>Rendimento RITA</label><div class="fr"><input type="range" id="ritaRate" min="0" max="4" step="0.25" value="2"><span class="va" id="va-ritaRate">2,00%</span></div></div><div class="pill"><strong>Nota:</strong> la RITA richiede il rispetto delle condizioni normative applicabili. La simulazione è didattica e non sostituisce verifica contrattuale/fiscale.</div></div></div>
+  <div class="ig"><div class="gl">Profilo</div><div class="fi"><label>Età attuale</label><div class="fr"><input type="range" id="eta" min="20" max="62" step="1" value="35"><span class="va" id="va-eta">35 a</span></div></div><div class="fi"><label>Età pensionamento</label><div class="fr"><input type="range" id="pens" min="60" max="72" step="1" value="67"><span class="va" id="va-pens">67 a</span></div></div><div class="fi"><label>Anno primo versamento <span class="tooltip-trigger" style="font-size:10px">ⓘ<span class="tooltip-text">Determina l'anzianità contributiva e l'aliquota fiscale</span></span></label><div class="fr"><select id="annoInizio"></select></div></div></div>
+  <div class="ig"><div class="gl">Versamenti annui</div><div class="fi"><label>TFR versato al fondo <span class="tooltip-trigger" style="font-size:10px">ⓘ<span class="tooltip-text">Per i professionisti senza TFR lasciare a 0</span></span></label><div class="fr"><input type="range" id="tfr" min="0" max="20000" step="100" value="3000"><span class="va" id="va-tfr">€3.000</span></div></div><div class="fi"><label>Contributo volontario annuo</label><div class="fr"><input type="range" id="con" min="0" max="100000" step="500" value="1200"><span class="va" id="va-con">€1.200</span></div></div></div>
+  <div class="ig"><div class="gl">Versamenti straordinari</div><div class="fi"><label>Versamento spot una tantum <span class="tooltip-trigger" style="font-size:10px">ⓘ<span class="tooltip-text">Es. eredità, vendita immobile, bonus una tantum</span></span></label><div class="fr"><input type="range" id="spot" min="0" max="5000000" step="25000" value="0"><span class="va" id="va-spot">€0</span></div></div><div class="pill">Versamento una tantum che entra subito nel montante.<span class="spot-badge">SPOT</span></div></div>
+  <div class="ig"><div class="gl">Trasferimento da altro fondo</div><div class="fi"><label>Montante già accumulato</label><div class="fr"><input type="range" id="transf" min="0" max="500000" step="2500" value="0"><span class="va" id="va-transf">€0</span></div></div></div>
+  <div class="ig"><div class="gl">Ipotesi rendimento</div><div class="fi"><label>Rendimento netto atteso · Dynamic</label><div class="fr"><input type="range" id="rnet" min="1" max="12" step="0.25" value="6.71"><span class="va" id="va-rnet">6,71%</span></div></div><div class="diff-box"><div class="diff-title">Rendimenti netti applicati</div><div class="diff-fund"><span class="df-name" style="color:var(--ra)">▪ Dynamic · Raiffeisen</span><span class="df-val" style="color:var(--ra)" id="show-r">6,71%</span></div><div class="diff-fund"><span class="df-name" style="color:var(--it)">▪ ActivITAS · ITAS</span><span class="df-val" style="color:var(--it)" id="show-i">9,05%</span></div><div class="diff-gap"><span class="gap-label">Differenziale storico</span><span class="gap-val" id="show-gap">+2,34%</span></div></div><div class="fi"><label>Differenziale ActivITAS − Dynamic</label><div class="fr"><input type="range" id="gap" min="-2" max="5" step="0.25" value="2.34"><span class="va" id="va-gap">+2,34%</span></div></div><div class="pill">Rendimenti netti storici: <strong style="color:var(--ra)">Dynamic +6,71%</strong>, <strong style="color:var(--it)">ActivITAS +9,05%</strong>. Non è garanzia futura.</div></div>
+  <div class="ig"><div class="gl">Fiscalità <span class="tooltip-trigger" style="font-size:10px">ⓘ<span class="tooltip-text">Aliquota 15%→9% in base agli anni di permanenza (dal 2007)</span></span></div><div class="pill" id="fiscalita-info">Calcolo automatico in base agli anni di permanenza</div></div>
+  <div class="ig"><div class="gl">Prestazione finale</div><div class="pill" id="soglia-info" style="border-color:rgba(232,201,106,.25);background:var(--go2)">—</div><div class="fi"><label>Percentuale in rendita <span class="tooltip-trigger" style="font-size:10px">ⓘ<span class="tooltip-text">Minimo 40% se rendita sopra soglia INPS. 100% = tutto in rendita vitalizia</span></span></label><div class="fr"><input type="range" id="pctRendita" min="40" max="100" step="5" value="40"><span class="va" id="va-pctRendita">40%</span></div></div><div class="btn-full" id="btn-full-rendita">🔄 Converti tutto in rendita (100%)</div><div class="btn-export" id="btn-export">📥 Scarica riepilogo risultati</div><div class="fi"><label>Rendimento capitale riscattato investito</label><div class="fr"><input type="range" id="post" min="0" max="6" step="0.25" value="2"><span class="va" id="va-post">2,00%</span></div></div></div>
+  <div class="ig"><div class="gl">RITA</div><div class="fi" style="flex-direction:row;align-items:center;justify-content:space-between"><label>Attiva simulazione RITA <span class="tooltip-trigger" style="font-size:10px">ⓘ<span class="tooltip-text">Rendita Integrativa Temporanea Anticipata: anticipo pensionistico 5-10 anni prima</span></span></label><label style="position:relative;display:inline-block;width:36px;height:20px;cursor:pointer"><input type="checkbox" id="ritaOn" style="opacity:0;width:0;height:0;position:absolute"><span id="ritaToggle" style="position:absolute;inset:0;background:var(--bd2);border-radius:10px;transition:.2s"></span><span id="ritaThumb" style="position:absolute;top:3px;left:3px;width:14px;height:14px;background:var(--di);border-radius:50%;transition:.2s"></span></label></div><div id="rita-opts" style="display:none;flex-direction:column;gap:10px"><div class="fi"><label>Età inizio RITA</label><div class="fr"><input type="range" id="ritaEta" min="57" max="66" step="1" value="62"><span class="va" id="va-ritaEta">62 a</span></div></div><div class="fi"><label style="display:flex;justify-content:space-between">Tipo RITA <span id="rita-tipo-label" style="color:var(--go)">Totale</span></label><div class="fr"><input type="range" id="ritaPct" min="10" max="100" step="5" value="100"><span class="va" id="va-ritaPct">100%</span></div></div><div class="fi"><label>Rendimento RITA</label><div class="fr"><input type="range" id="ritaRate" min="0" max="4" step="0.25" value="2"><span class="va" id="va-ritaRate">2,00%</span></div></div><div class="pill"><strong>Nota:</strong> la RITA richiede il rispetto delle condizioni normative applicabili.</div></div></div>
 </aside>
 <main class="mn"><div class="mi">
   <div class="kr"><div class="kp"><div class="kl">Dynamic · Raiffeisen</div><div class="kv" style="color:var(--ra)" id="kpi-r">—</div><div class="ks" id="kpi-r-s">—</div></div><div class="kp"><div class="kl">ActivITAS · ITAS</div><div class="kv" style="color:var(--it)" id="kpi-i">—</div><div class="ks" id="kpi-i-s">—</div></div><div class="kp"><div class="kl">Vantaggio ActivITAS</div><div class="kv" style="color:var(--go)" id="kpi-d">—</div><div class="ks" id="kpi-d-s">—</div></div><div class="kp"><div class="kl">Durata · Versamento/anno</div><div class="kv" style="color:var(--go)" id="kpi-a">—</div><div class="ks" id="kpi-a-s">—</div></div></div>
+  
   <div class="sc"><div class="sh"><span class="st">Crescita della posizione individuale nel tempo</span><span class="sg">ACCUMULO</span></div><div class="sb2"><div class="legend"><span><span class="ld" style="background:var(--ra)"></span>Dynamic</span><span><span class="ld" style="background:var(--it)"></span>ActivITAS</span><span><span class="ld" style="background:var(--di);height:2px;border-top:1px dashed"></span>Solo versamenti</span></div><div style="position:relative;height:230px"><canvas id="cAccum"></canvas></div></div></div>
-  <div class="sc"><div class="sh"><span class="st">Prestazioni al pensionamento</span><span class="sg">IPOTESI DIDATTICA</span></div><div class="sb2"><div style="display:flex;gap:8px;margin-bottom:13px;flex-wrap:wrap" id="prestazioni-pills"><div class="pill" style="flex:1;min-width:150px"><strong style="color:var(--go)" id="pill-pct">40% in rendita vitalizia</strong> — la quota convertita in rendita.</div><div class="pill" style="flex:1;min-width:150px"><strong style="color:var(--gr)">Conversione</strong> — coefficiente ipotizzato <strong>5,75%</strong> e caricamento <strong>−2,25%</strong>.</div><div class="pill" style="flex:1;min-width:150px" id="pill-tutto-cap"><strong>Eccezione tutto-capitale</strong> — simulata con soglia indicativa. Verificare sempre regole effettive del fondo e normativa vigente.</div></div><div class="pg" id="pg"></div><div class="vantaggio-netto" id="vn-box" style="display:none"><span class="vn-label">Vantaggio netto ActivITAS <span class="tooltip-trigger" title="Tiene conto della maggiore tassazione sul capitale più elevato">ⓘ</span></span><span class="vn-val" id="vn-val">—</span></div></div></div>
-  <div class="sc"><div class="sh"><span class="st">Eredità: capitale residuo nel tempo</span><span class="sg">POST-PENSIONAMENTO</span></div><div class="sb2">
-    <div class="rendita-opts" id="rendita-opts">
-      <div class="rendita-opt active" data-type="certa10"><span class="opt-icon">📋</span>Rendita certa 10 anni</div>
-      <div class="rendita-opt" data-type="certa5"><span class="opt-icon">📋</span>Rendita certa 5 anni</div>
-      <div class="rendita-opt" data-type="certa15"><span class="opt-icon">📋</span>Rendita certa 15 anni</div>
-      <div class="rendita-opt" data-type="vitalizia"><span class="opt-icon">⏳</span>Rendita vitalizia</div>
-      <div class="rendita-opt" data-type="reversibile"><span class="opt-icon">👥</span>Reversibile (60%)</div>
-    </div>
-    <div class="hb" id="hb"></div>
-    <div class="eg" id="eg"></div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-      <div class="pill" id="eredita-pill-1"><strong style="color:var(--go)">Rendita certa 10 anni</strong><br>In caso di decesso entro 10 anni dal pensionamento, gli eredi ricevono le rate residue.</div>
-      <div class="pill" id="rc-pill">—</div>
-    </div>
-    <div style="position:relative;height:170px;margin-top:14px"><canvas id="cEred"></canvas></div>
-    <div class="no"><strong>Avvertenza:</strong> modello semplificato, utile per confronto didattico. Costi, fiscalità, coefficienti, opzioni di rendita e regole successorie vanno verificati su documentazione ufficiale aggiornata.</div>
-  </div></div>
-  <div class="sc" id="rita-section" style="display:none"><div class="sh"><span class="st">RITA — Rendita Integrativa Temporanea Anticipata</span><span class="sg">PRE-PENSIONAMENTO</span></div><div class="sb2"><div id="rita-warning" class="pill" style="margin-bottom:12px;border-color:rgba(232,201,106,0.3)"></div><div class="rita-month"><div style="flex:1"><div class="rm-label">RATA MENSILE RITA</div><div style="display:flex;gap:20px;margin-top:4px"><div><div style="font-size:9px;color:var(--ra);margin-bottom:2px">Dynamic</div><div class="rm-val" id="rita-m-r" style="color:var(--ra);font-size:19px">—</div></div><div><div style="font-size:9px;color:var(--it);margin-bottom:2px">ActivITAS</div><div class="rm-val" id="rita-m-i" style="color:var(--it);font-size:19px">—</div></div></div></div><div style="text-align:right"><div class="rm-label">DURATA</div><div id="rita-dur" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:14px;color:var(--go);margin-top:4px">—</div><div style="font-size:9px;color:var(--di);margin-top:2px" id="rita-dur-sub">—</div></div></div><div class="rita-compare" id="rita-compare"></div><div style="position:relative;height:200px;margin-top:14px"><canvas id="cRita"></canvas></div><div class="no" id="rita-note">—</div></div></div>
-  <div class="footer-note">Simulatore didattico. Non costituisce consulenza finanziaria, previdenziale, fiscale o assicurativa.</div>
+  
+  <div class="sc"><div class="sh"><span class="st">Prestazioni al pensionamento</span><span class="sg">REGOLA 60/40</span></div><div class="sb2"><div style="display:flex;gap:8px;margin-bottom:13px;flex-wrap:wrap"><div class="pill" style="flex:1;min-width:150px"><strong style="color:var(--go)" id="pill-pct">40% in rendita</strong> — quota convertita.</div><div class="pill" style="flex:1;min-width:150px"><strong style="color:var(--gr)">60% capitale / 40% rendita</strong> — regola ordinaria.</div><div class="pill" style="flex:1;min-width:150px" id="pill-tutto-cap">—</div></div>
+  <div class="fiscal-note" id="fiscal-note">—</div>
+  <div class="pg" id="pg"></div><div class="vantaggio-netto" id="vn-box" style="display:none"><span class="vn-label">Vantaggio netto ActivITAS stimato su capitale + 15 anni rendita <span class="tooltip-trigger">ⓘ<span class="tooltip-text">Considera tassazione maggiore sul capitale più elevato</span></span></span><span class="vn-val" id="vn-val">—</span></div></div></div>
+  
+  <div class="sc"><div class="sh"><span class="st">Capitale residuo ed ereditabile nel tempo</span><span class="sg">POST-PENSIONAMENTO</span></div><div class="sb2"><div class="rendita-opts" id="rendita-opts"><div class="rendita-opt active" data-type="certa5"><span class="opt-icon">📋</span>Rendita certa 5a<div class="coeff-info">coeff. 21,5%</div></div><div class="rendita-opt" data-type="certa10"><span class="opt-icon">📋</span>Rendita certa 10a<div class="coeff-info">coeff. 11,8%</div></div><div class="rendita-opt" data-type="certa15"><span class="opt-icon">📋</span>Rendita certa 15a<div class="coeff-info">coeff. 8,5%</div></div><div class="rendita-opt" data-type="vitalizia"><span class="opt-icon">⏳</span>Vitalizia<div class="coeff-info">coeff. 5,75%</div></div><div class="rendita-opt" data-type="reversibile"><span class="opt-icon">👥</span>Reversibile<div class="coeff-info">coeff. 4,89%</div></div></div><div id="reversibile-opts" class="reversibile-opts"><div class="fi"><label>Età beneficiario seconda testa</label><div class="fr"><input type="range" id="etaBenef" min="50" max="80" step="1" value="60"><span class="va" id="va-etaBenef">60 a</span></div></div></div><div class="hb" id="hb"></div><div class="eg" id="eg"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="pill" id="eredita-pill-1">—</div><div class="pill" id="rc-pill">—</div></div><div style="position:relative;height:170px;margin-top:14px"><canvas id="cEred"></canvas></div><div class="no"><strong>Avvertenza:</strong> modello semplificato. Costi, fiscalità, coefficienti, opzioni di rendita e regole successorie vanno verificati sui documenti ufficiali del fondo.</div></div></div>
+  
+  <div class="sc" id="rita-section" style="display:none"><div class="sh"><span class="st">RITA — Rendita Integrativa Temporanea Anticipata</span><span class="sg">PRE-PENSIONAMENTO</span></div><div class="sb2"><div id="rita-warning" class="pill" style="margin-bottom:12px;border-color:rgba(232,201,106,.3)"></div><div class="rita-month"><div style="flex:1"><div class="rm-label">RATA MENSILE RITA</div><div style="display:flex;gap:20px;margin-top:4px;flex-wrap:wrap"><div><div style="font-size:9px;color:var(--ra);margin-bottom:2px">Dynamic</div><div class="rm-val" id="rita-m-r" style="color:var(--ra);font-size:19px">—</div></div><div><div style="font-size:9px;color:var(--it);margin-bottom:2px">ActivITAS</div><div class="rm-val" id="rita-m-i" style="color:var(--it);font-size:19px">—</div></div></div></div><div style="text-align:right"><div class="rm-label">DURATA</div><div id="rita-dur" style="font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;font-size:14px;color:var(--go);margin-top:4px">—</div><div style="font-size:9px;color:var(--di);margin-top:2px" id="rita-dur-sub">—</div></div></div><div class="rita-compare" id="rita-compare"></div><div style="position:relative;height:200px;margin-top:14px"><canvas id="cRita"></canvas></div><div class="no" id="rita-note">—</div></div></div>
+  <div class="footer-note">Simulatore didattico. Non costituisce consulenza finanziaria, previdenziale, fiscale o assicurativa.<br>Creato a scopo educativo — verifica sempre i dati con la documentazione ufficiale del fondo.</div>
 </div></main></div>
 <script>
-const COEFF=0.0575, CARICO=0.0225;
-let cA=null, cE=null, cRita=null, renditaType='certa10';
-const ANNO_CORRENTE=2026;
-const ids=['eta','pens','tfr','con','transf','rnet','gap','post','pctRendita','ritaOn','ritaEta','ritaPct','ritaRate','annoInizio'];
-const euro=n=>'€'+Math.round(n).toLocaleString('it-IT');
+const COEFF_VITALIZIO=.0575,COEFF_CERTA5=.215,COEFF_CERTA10=.118,COEFF_CERTA15=.085,COEFF_REVERSIBILE=.0489,CARICO=.0225;
+const ASSEGNO_SOCIALE=7101.12,SOGLIA_TUTTO_CAPITALE=ASSEGNO_SOCIALE/2,ANNO_CORRENTE=2026,ETA_BENEF_MAX=85;
+let cA=null,cE=null,cRita=null,renditaType='certa5',ultimiRisultati=null;
+const ids=['eta','pens','tfr','con','spot','transf','rnet','gap','post','pctRendita','ritaOn','ritaEta','ritaPct','ritaRate','annoInizio','etaBenef'];
+const euro=n=>'€'+Math.round(Number(n)||0).toLocaleString('it-IT');
 const compact=n=>Math.abs(n)>=1e6?'€'+(n/1e6).toFixed(2).replace('.',',')+'M':Math.abs(n)>=1e3?'€'+Math.round(n).toLocaleString('it-IT'):'€'+Math.round(n).toLocaleString('it-IT');
-const pct=n=>n.toFixed(2).replace('.',',')+'%';
+const pct=n=>(Number(n)||0).toFixed(2).replace('.',',')+'%';
+function getCoeff(t){return t==='certa5'?COEFF_CERTA5:t==='certa10'?COEFF_CERTA10:t==='certa15'?COEFF_CERTA15:t==='reversibile'?COEFF_REVERSIBILE:COEFF_VITALIZIO}
+function getDurata(t){return t==='certa5'?5:t==='certa10'?10:t==='certa15'?15:0}
+function sim(rate,years,annuo,init){let p=Number(init)||0;const s=[Math.round(p)];for(let y=1;y<=years;y++){p=p*(1+rate/100)+annuo;s.push(Math.round(p))}return s}
+function safeDestroy(c){if(c&&typeof c.destroy==='function')c.destroy()}
+function decumuloResiduo(pos,rata,m,rate){if(rate===0)return Math.max(0,pos-rata*m);return Math.max(0,pos*Math.pow(1+rate,m)-rata*(Math.pow(1+rate,m)-1)/rate)}
+function rataRITA(pos,n,r){if(n<=0)return 0;if(r===0)return pos/n;return pos*r/(1-Math.pow(1+r,-n))}
+function calcolaAliquota(ap){if(ap<=15)return 15;if(ap<=35)return Math.max(9,15-(ap-15)*.30);return 9}
+function capitaleNetto(pos,pctR,alq){const pctC=100-pctR,l=pos*pctC/100,t=l*alq/100;return{lordo:l,tassazione:t,netto:l-t,aliquota:alq,pctCapitale:pctC}}
+function calcolaSoglia(posizione){const rendita70=posizione*.70*COEFF_VITALIZIO;return{sottoSoglia:rendita70<SOGLIA_TUTTO_CAPITALE,rendita70}}
+function calcolaRenditaAnnua(pos,pctR,tipo){return pos*pctR/100*getCoeff(tipo)*(1-CARICO)}
+function calcolaEredita(renditaAnnua,y,tipo,etaBeneficiario){if(tipo==='vitalizia')return 0;if(tipo==='certa5')return y<5?Math.round(renditaAnnua*(5-y)):0;if(tipo==='certa10')return y<10?Math.round(renditaAnnua*(10-y)):0;if(tipo==='certa15')return y<15?Math.round(renditaAnnua*(15-y)):0;if(tipo==='reversibile'){const anniResidui=Math.max(0,ETA_BENEF_MAX-etaBeneficiario);return Math.round(renditaAnnua*.60*anniResidui)}return 0}
+function popolaAnnoInizio(){const s=document.getElementById('annoInizio');for(let a=ANNO_CORRENTE;a>=ANNO_CORRENTE-40;a--){const o=document.createElement('option');o.value=a;o.textContent=a;if(a===ANNO_CORRENTE-10)o.selected=true;s.appendChild(o)}}
+function pCard(pos,nomeFondo,cls,alq,pctR,itasNote,tuttoCapPossibile){const cap=capitaleNetto(pos,pctR,alq),ren=pos*pctR/100,netRen=ren*(1-CARICO),annRen=netRen*COEFF_VITALIZIO,mesRen=annRen/12,isFull=pctR===100;return `<div class="pc"><div class="pf" style="color:${cls==='r'?'var(--ra)':'var(--it)'}">${nomeFondo}</div><div class="pr"><span class="prl">Posizione totale</span><span class="prv">${euro(pos)}</span></div>${isFull?`<div class="pr"><span class="prl" style="color:var(--re)">Capitale erogato</span><span class="prv" style="color:var(--re)">€0 — tutto in rendita</span></div>`:`<div class="pr"><span class="prl" style="color:var(--go)">${cap.pctCapitale}% capitale lordo</span><span class="prv" style="color:var(--go)">${euro(cap.lordo)}</span></div><div class="pr"><span class="prl" style="color:var(--re)">− Tassazione (${pct(cap.aliquota)})</span><span class="prv" style="color:var(--re)">−${euro(cap.tassazione)}</span></div><div class="pr"><span class="prl" style="color:var(--gr)">Capitale netto erogato</span><span class="prv" style="color:var(--gr);font-weight:600">${euro(cap.netto)}</span></div>`}<div class="pr" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="prl">${pctR}% → rendita vitalizia lorda</span><span class="prv">${euro(ren)}</span></div><div class="pr"><span class="prl">− Caricamento 2,25%</span><span class="prv" style="color:var(--di)">−${euro(ren*CARICO)}</span></div><div class="pr"><span class="prl" style="color:var(--gr)">Rendita annua netta</span><span class="prv" style="color:var(--gr);font-weight:600">${euro(annRen)}${itasNote?' *':''}</span></div><div class="pr"><span class="prl" style="color:var(--gr)">Rendita mensile netta</span><span class="prv" style="color:var(--gr)">${euro(mesRen)}</span></div><div class="pr" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="prl">Tutto capitale possibile?</span><span class="prv" style="color:${tuttoCapPossibile?'var(--gr)':'var(--re)'};font-size:10px">${isFull?'—':tuttoCapPossibile?'✓ Sì, montante esiguo':'✗ No, regola 60/40'}</span></div></div>`}
 
-function sim(rate,years,annuo,init){
-  let p=Number(init)||0;
-  const s=[Math.round(p)];
-  for(let y=1;y<=years;y++){p=p*(1+rate/100)+annuo;s.push(Math.round(p));}
-  return s;
-}
-function safeDestroy(chart){if(chart && typeof chart.destroy==='function') chart.destroy();}
-function decumuloResiduo(pos,rata,m,rate){
-  if(rate===0)return Math.max(0,pos-rata*m);
-  return Math.max(0,pos*Math.pow(1+rate,m)-rata*(Math.pow(1+rate,m)-1)/rate);
-}
-function rataRITA(pos,n,r){
-  if(n<=0)return 0;
-  if(r===0)return pos/n;
-  return pos*r/(1-Math.pow(1+r,-n));
-}
+function generaExport(){
+  if(!ultimiRisultati) return;
+  const r=ultimiRisultati;
+  const testo=`============================================
+SIMULATORE PENSIONE COMPLEMENTARE
+Dynamic (Raiffeisen) vs ActivITAS (ITAS)
+============================================
+Data simulazione: ${new Date().toLocaleDateString('it-IT')}
 
-/* Calcolo aliquota fiscale in base agli anni di permanenza */
-function calcolaAliquota(anniPermanenza){
-  if(anniPermanenza<=15) return 15;
-  if(anniPermanenza<=35){
-    const anniOltre15=anniPermanenza-15;
-    return Math.max(9, 15 - anniOltre15*0.30);
-  }
-  return 9;
-}
+PROFILO
+  Età attuale: ${r.eta} anni
+  Età pensionamento: ${r.pens} anni
+  Anni di accumulo: ${r.anniFut}
+  Anni totale permanenza: ${r.anniPerm}
 
-/* NUOVO: Calcolo capitale netto con pctRendita variabile */
-function capitaleNetto(posizione, pctRendita, aliquota){
-  const pctCapitale=100-pctRendita;
-  const lordo=posizione*pctCapitale/100;
-  const tassazione=lordo*aliquota/100;
-  const netto=lordo-tassazione;
-  return {lordo, tassazione, netto, aliquota, pctCapitale};
-}
+VERSAMENTI
+  TFR annuo: ${euro(r.tfr)}
+  Contributo volontario annuo: ${euro(r.con)}
+  Versamento spot: ${euro(r.spot)}
+  Montante pregresso: ${euro(r.transf)}
+  Totale versamento annuo: ${euro(r.annuo)}
 
-/* Calcolo eredità - CORRETTO */
-function calcolaEredita(renditaAnnua, annoMorte, tipo){
-  switch(tipo){
-    case 'vitalizia': return 0;
-    case 'certa5':{
-      if(annoMorte<5) return Math.round(renditaAnnua*(5-annoMorte));
-      return 0;
-    }
-    case 'certa10':{
-      if(annoMorte<10) return Math.round(renditaAnnua*(10-annoMorte));
-      return 0;
-    }
-    case 'certa15':{
-      if(annoMorte<15) return Math.round(renditaAnnua*(15-annoMorte));
-      return 0;
-    }
-    case 'reversibile':{
-      const anniRevers=Math.min(15, Math.max(0, 85-(67+annoMorte)));
-      if(anniRevers>0) return Math.round(renditaAnnua*0.60*anniRevers);
-      return 0;
-    }
-    default: return 0;
-  }
-}
+RENDIMENTI
+  Dynamic: ${pct(r.rnet)}
+  ActivITAS: ${pct(r.rnetI)}
+  Differenziale: ${(r.gap>=0?'+':'')+pct(r.gap)}
 
-/* Popola menu anno inizio */
-function popolaAnnoInizio(){
-  const select=document.getElementById('annoInizio');
-  select.innerHTML='';
-  for(let anno=ANNO_CORRENTE; anno>=ANNO_CORRENTE-40; anno--){
-    const option=document.createElement('option');
-    option.value=anno;
-    option.textContent=anno;
-    if(anno===ANNO_CORRENTE-10) option.selected=true;
-    select.appendChild(option);
-  }
-}
-popolaAnnoInizio();
+FISCALITÀ
+  Aliquota stimata: ${pct(r.aliquota)}
+  Regola: ${r.tuttoCapPossibile?'Tutto capitale possibile (montante esiguo)':'60% capitale / 40% rendita (regola ordinaria)'}
 
-/* NUOVO: pCard con percentuale rendita variabile */
-function pCard(pos, nomeFondo, cls, aliquota, pctRendita, itasNote){
-  const cap=capitaleNetto(pos, pctRendita, aliquota);
-  const ren=pos*pctRendita/100;
-  const netRen=ren*(1-CARICO);
-  const annRen=netRen*COEFF;
-  const mesRen=annRen/12;
+MONTANTE FINALE STIMATO
+  Dynamic: ${euro(r.fR)}
+  ActivITAS: ${euro(r.fI)}
+  Differenza: ${(r.diff>=0?'+':'')+euro(r.diff)} (${pct(Math.abs(r.diff/r.fR*100))})
+
+PRESTAZIONI (con ${r.pctRendita}% in rendita vitalizia)
+  DYNAMIC:
+    Capitale netto: ${euro(r.capNetR.netto)}
+    Rendita annua netta: ${euro(r.renAnnuaVR)}
+    Rendita mensile netta: ${euro(r.renAnnuaVR/12)}
+  ACTIVITAS:
+    Capitale netto: ${euro(r.capNetI.netto)}
+    Rendita annua netta: ${euro(r.renAnnuaVI)}
+    Rendita mensile netta: ${euro(r.renAnnuaVI/12)}
+
+VANTAGGIO NETTO STIMATO: ${(r.vantaggioNetto>=0?'+':'')+euro(r.vantaggioNetto)}
+
+============================================
+⚠ AVVERTENZA: Simulazione didattica.
+Non costituisce consulenza finanziaria.
+Verificare i dati con documentazione ufficiale.
+============================================`;
   
-  /* Soglia tutto-capitale: calcolo semplificato (solo se pctRendita < 100) */
-  let tutto=false;
-  if(pctRendita<100){
-    const renditaAnnuaLorda=pos*(pctRendita/100)*COEFF;
-    tutto=renditaAnnuaLorda<(COEFF*70000);
-  }
+  const blob=new Blob([testo],{type:'text/plain;charset=utf-8'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download='simulazione-pensione-'+new Date().toISOString().slice(0,10)+'.txt';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   
-  const isFullRendita=pctRendita===100;
-  
-  return `<div class="pc"><div class="pf" style="color:${cls==='r'?'var(--ra)':'var(--it)'}">${nomeFondo}</div>
-  <div class="pr"><span class="prl">Posizione totale</span><span class="prv">${euro(pos)}</span></div>
-  ${isFullRendita?`<div class="pr"><span class="prl" style="color:var(--re)">Capitale erogato</span><span class="prv" style="color:var(--re)">€0 — tutto in rendita</span></div>`:`
-  <div class="pr"><span class="prl" style="color:var(--go)">${cap.pctCapitale}% capitale lordo</span><span class="prv" style="color:var(--go)">${euro(cap.lordo)}</span></div>
-  <div class="pr tax-row"><span class="prl" style="color:var(--re)">− Tassazione (${pct(cap.aliquota)})</span><span class="prv" style="color:var(--re)">−${euro(cap.tassazione)}</span></div>
-  <div class="pr"><span class="prl" style="color:var(--gr)">Capitale netto erogato</span><span class="prv" style="color:var(--gr);font-weight:600">${euro(cap.netto)}</span></div>`}
-  <div class="pr" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="prl">${pctRendita}% → rendita (lordo)</span><span class="prv">${euro(ren)}</span></div>
-  <div class="pr"><span class="prl">− Caricamento 2,25%</span><span class="prv" style="color:var(--di)">−${euro(ren*CARICO)}</span></div>
-  <div class="pr"><span class="prl" style="color:var(--gr)">Rendita annua netta</span><span class="prv" style="color:var(--gr);font-weight:600">${euro(annRen)}${itasNote?' *':''}</span></div>
-  <div class="pr"><span class="prl" style="color:var(--gr)">Rendita mensile netta</span><span class="prv" style="color:var(--gr)">${euro(mesRen)}</span></div>
-  ${isFullRendita?`<div class="rendita-100-badge">⚠ Tutto il montante è stato convertito in rendita vitalizia. Nessun capitale immediato.</div>`:(pctRendita>60?`<div class="rendita-100-badge" style="color:var(--go)">Nota: hai scelto una quota rendita superiore allo standard (${pctRendita}%).</div>`:'')}
-  <div class="pr" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="prl">Tutto capitale?</span><span class="prv" style="color:${tutto?'var(--gr)':'var(--re)'};font-size:10px">${isFullRendita?'—':tutto?'✓ Sì':'✗ No'}</span></div></div>`;
+  const btn=document.getElementById('btn-export');
+  btn.textContent='✓ Scaricato!';btn.classList.add('exported');
+  setTimeout(()=>{btn.textContent='📥 Scarica riepilogo risultati';btn.classList.remove('exported')},2000);
 }
 
 function calc(){
- const eta=+etaEl.value, pens=+pensEl.value, tfr=+tfrEl.value, con=+conEl.value, transf=+transfEl.value, rnet=+rnetEl.value, gap=+gapEl.value, post=+postEl.value, pctRendita=+pctRenditaEl.value, annoInizio=+annoInizioEl.value;
+ let eta=+etaEl.value,pens=+pensEl.value,tfr=+tfrEl.value,con=+conEl.value,spot=+spotEl.value,transf=+transfEl.value,rnet=+rnetEl.value,gap=+gapEl.value,post=+postEl.value,pctRendita=+pctRenditaEl.value,annoInizio=+annoInizioEl.value,etaBenef=+etaBenefEl.value;
+ const anniPre=Math.max(0,ANNO_CORRENTE-annoInizio),anniFut=Math.max(1,pens-eta),anniPerm=anniPre+anniFut,aliquota=calcolaAliquota(anniPerm),initTot=transf+spot,annuo=tfr+con,rnetI=rnet+gap;
+ const sR=sim(rnet,anniFut,annuo,initTot),sI=sim(rnetI,anniFut,annuo,initTot),fR=sR[anniFut],fI=sI[anniFut],sogliaR=calcolaSoglia(fR),sogliaI=calcolaSoglia(fI),tuttoCapPossibile=sogliaR.sottoSoglia&&sogliaI.sottoSoglia;
+ const pctMinimo=tuttoCapPossibile?0:40;pctRenditaEl.min=pctMinimo;if(pctRendita<pctMinimo){pctRendita=pctMinimo;pctRenditaEl.value=pctMinimo}
+ const capNetR=capitaleNetto(fR,pctRendita,aliquota),capNetI=capitaleNetto(fI,pctRendita,aliquota),renAnnuaVR=fR*pctRendita/100*(1-CARICO)*COEFF_VITALIZIO,renAnnuaVI=fI*pctRendita/100*(1-CARICO)*COEFF_VITALIZIO,diff=fI-fR,vantaggioNetto=(capNetI.netto-capNetR.netto)+(renAnnuaVI-renAnnuaVR)*15;
  
- /* Calcolo anni di permanenza */
- const anniContributiPre=Math.max(0, ANNO_CORRENTE-annoInizio);
- const anniFuturi=Math.max(1, pens-eta);
- const anniPermanenza=anniContributiPre+anniFuturi;
- const aliquota=calcolaAliquota(anniPermanenza);
+ /* Salva risultati per export */
+ ultimiRisultati={eta,pens,anniFut,anniPerm,tfr,con,spot,transf,annuo,rnet,rnetI,gap,aliquota,tuttoCapPossibile,fR,fI,diff,pctRendita,capNetR,capNetI,renAnnuaVR,renAnnuaVI,vantaggioNetto};
  
- document.getElementById('va-eta').textContent=eta+' a';
- document.getElementById('va-pens').textContent=pens+' a';
- document.getElementById('va-tfr').textContent=euro(tfr);
- document.getElementById('va-con').textContent=euro(con);
- document.getElementById('va-transf').textContent=euro(transf);
- document.getElementById('va-rnet').textContent=pct(rnet);
- document.getElementById('va-gap').textContent=(gap>=0?'+':'')+pct(gap);
- document.getElementById('va-post').textContent=pct(post);
- document.getElementById('va-pctRendita').textContent=pctRendita+'%';
+ document.getElementById('va-eta').textContent=eta+' a';document.getElementById('va-pens').textContent=pens+' a';document.getElementById('va-tfr').textContent=euro(tfr);document.getElementById('va-con').textContent=euro(con);document.getElementById('va-spot').textContent=euro(spot);document.getElementById('va-transf').textContent=euro(transf);document.getElementById('va-rnet').textContent=pct(rnet);document.getElementById('va-gap').textContent=(gap>=0?'+':'')+pct(gap);document.getElementById('va-post').textContent=pct(post);document.getElementById('va-pctRendita').textContent=pctRendita+'%';document.getElementById('va-etaBenef').textContent=etaBenef+' a';document.getElementById('show-r').textContent=pct(rnet);document.getElementById('show-i').textContent=pct(rnetI);document.getElementById('show-gap').textContent=(gap>=0?'+':'')+pct(gap);
  
- /* Aggiorna pill informative */
- document.getElementById('pill-pct').textContent=pctRendita+'% in rendita vitalizia';
- const pctCapitale=100-pctRendita;
- if(pctRendita===100){
-   document.getElementById('pill-tutto-cap').innerHTML='<strong style="color:var(--re)">Tutto in rendita</strong> — nessun capitale immediato. Scelta atipica ma possibile.';
- } else if(pctRendita>60){
-   document.getElementById('pill-tutto-cap').innerHTML='<strong>Quota rendita maggiorata</strong> — hai scelto '+pctRendita+'% in rendita (standard 40%).';
- } else {
-   document.getElementById('pill-tutto-cap').innerHTML='<strong>Eccezione tutto-capitale</strong> — simulata con soglia indicativa. Verificare sempre regole effettive.';
- }
+ /* NOTE FISCALI DETTAGLIATE */
+ const fascia=anniPerm<=15?'15% (fascia 0-15 anni)':anniPerm<=35?pct(aliquota)+' (fascia 16-35 anni, −0,30%/anno)':'9% (minimo, oltre 35 anni)';
+ document.getElementById('fiscal-note').innerHTML=`<strong>Nota fiscale:</strong> Aliquota ${pct(aliquota)} (${fascia}). La tassazione si applica solo sulla quota capitale (${100-pctRendita}% del montante = ${euro((100-pctRendita)/100*fR)} per Dynamic). La quota rendita è tassata annualmente con aliquota marginale IRPEF sul 75% dell'importo (es. rendita di ${euro(renAnnuaVR)} → imponibile ${euro(renAnnuaVR*.75)}). ${tuttoCapPossibile?'<strong style="color:var(--gr)">Montante sotto soglia: possibile riscattare tutto il capitale.</strong>':'<strong style="color:var(--go)">Regola 60/40 attiva: minimo 40% in rendita.</strong>'}`;
  
- /* Fiscalità */
- const aliquotaLabel=aliquota===9?'9% (minimo)':aliquota===15?'15% (massimo)':pct(aliquota);
- document.getElementById('fiscalita-info').innerHTML=`<strong>Aliquota calcolata: ${aliquotaLabel}</strong><br>Anni permanenza stimati: <strong>${anniPermanenza}</strong> (${anniContributiPre} trascorsi + ${anniFuturi} futuri)<br><span style="font-size:9px;color:var(--di)">Scaglioni: 15% fino a 15 anni, −0,30% per anno successivo, minimo 9% dopo 35 anni.</span>`;
+ document.getElementById('soglia-info').innerHTML=tuttoCapPossibile?`<strong style="color:var(--gr)">✓ Tutto capitale possibile</strong><br>Rendita da 70% montante: Dynamic ${euro(sogliaR.rendita70)} · ActivITAS ${euro(sogliaI.rendita70)} < soglia ${euro(SOGLIA_TUTTO_CAPITALE)} (50% assegno sociale)`:`<strong style="color:var(--re)">⚠ Regola ordinaria 60/40</strong><br>Rendita 70% montante: Dynamic ${euro(sogliaR.rendita70)} · ActivITAS ${euro(sogliaI.rendita70)} ≥ soglia ${euro(SOGLIA_TUTTO_CAPITALE)}`;
  
- const rnetI=rnet+gap;
- document.getElementById('show-r').textContent=pct(rnet);
- document.getElementById('show-i').textContent=pct(rnetI);
- document.getElementById('show-gap').textContent=(gap>=0?'+':'')+pct(gap);
+ const btnFull=document.getElementById('btn-full-rendita');if(pctRendita===100){btnFull.classList.add('active-rendita');btnFull.textContent='✓ Tutto in rendita (100%)'}else{btnFull.classList.remove('active-rendita');btnFull.textContent='🔄 Converti tutto in rendita (100%)'}
+ document.getElementById('pill-pct').textContent=pctRendita+'% in rendita';document.getElementById('pill-tutto-cap').innerHTML=pctRendita===100?'<strong style="color:var(--re)">Tutto in rendita</strong> — nessun capitale immediato.':tuttoCapPossibile?'<strong style="color:var(--gr)">✓ Tutto capitale possibile</strong> — eccezione per montante esiguo.':`<strong>Regola 60/40</strong> — ${100-pctRendita}% capitale e ${pctRendita}% rendita.`;
+ document.getElementById('fiscalita-info').innerHTML=`<strong>Aliquota: ${pct(aliquota)} (${fascia})</strong><br>Anni permanenza: <strong>${anniPerm}</strong> (${anniPre} trascorsi + ${anniFut} futuri)<br><span style="font-size:9px;color:var(--di)">La quota capitale è tassata con aliquota definitiva. La rendita è tassata annualmente.</span>`;
  
- const annuo=tfr+con;
- const sR=sim(rnet, anniFuturi, annuo, transf);
- const sI=sim(rnetI, anniFuturi, annuo, transf);
- const sPuri=Array.from({length:anniFuturi+1},(_,i)=>Math.round(transf+i*annuo));
- const fR=sR[anniFuturi], fI=sI[anniFuturi], diff=fI-fR;
+ const sPuri=Array.from({length:anniFut+1},(_,i)=>Math.round(initTot+i*annuo)),labels=Array.from({length:anniFut+1},(_,i)=>(eta+i)+'');
+ document.getElementById('kpi-r').textContent=compact(fR);document.getElementById('kpi-r-s').textContent='aliquota '+pct(aliquota)+(spot>0?' · spot '+euro(spot):'');document.getElementById('kpi-i').textContent=compact(fI);document.getElementById('kpi-i-s').textContent='aliquota '+pct(aliquota)+(spot>0?' · spot '+euro(spot):'');document.getElementById('kpi-d').textContent=(diff>=0?'+':'')+compact(diff);document.getElementById('kpi-d-s').textContent=(diff>=0?'vantaggio ':'svantaggio ')+pct(Math.abs(diff/fR*100));document.getElementById('kpi-a').textContent=anniFut+' anni';document.getElementById('kpi-a-s').innerHTML=euro(annuo)+'/anno · perm. '+anniPerm+'a'+(spot>0?' <span class="spot-badge">SPOT '+euro(spot)+'</span>':'');
  
- /* Vantaggio netto */
- const capNetR=capitaleNetto(fR, pctRendita, aliquota);
- const capNetI=capitaleNetto(fI, pctRendita, aliquota);
- const renAnnuaR=fR*(pctRendita/100)*(1-CARICO)*COEFF;
- const renAnnuaI=fI*(pctRendita/100)*(1-CARICO)*COEFF;
- const vantaggioNetto=(capNetI.netto-capNetR.netto)+(renAnnuaI-renAnnuaR)*15;
+ const vnBox=document.getElementById('vn-box');if(diff>0){vnBox.style.display='flex';document.getElementById('vn-val').textContent=(vantaggioNetto>=0?'+':'')+compact(vantaggioNetto)}else vnBox.style.display='none';
  
- const labels=Array.from({length:anniFuturi+1},(_,i)=>(eta+i)+'');
+ safeDestroy(cA);cA=new Chart(document.getElementById('cAccum'),{type:'line',data:{labels,datasets:[{label:'Dynamic',data:sR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,.05)',fill:true,pointRadius:0,borderWidth:2,tension:.4},{label:'ActivITAS',data:sI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,.05)',fill:true,pointRadius:0,borderWidth:2,tension:.4},{label:'Versamenti',data:sPuri,borderColor:'rgba(79,77,74,.6)',backgroundColor:'transparent',pointRadius:0,borderWidth:1,borderDash:[3,4],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+euro(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},x:{ticks:{maxTicksLimit:9,color:'#4f4d4a',font:{size:10},callback:(v,i)=>{const a=parseInt(labels[i]);return a%5===0?a:''}},grid:{display:false},border:{display:false}}}}});
  
- document.getElementById('kpi-r').textContent=compact(fR);
- document.getElementById('kpi-r-s').textContent='netto '+pct(rnet)+'/anno · aliquota '+pct(aliquota);
- document.getElementById('kpi-i').textContent=compact(fI);
- document.getElementById('kpi-i-s').textContent='netto '+pct(rnetI)+'/anno · aliquota '+pct(aliquota);
- document.getElementById('kpi-d').textContent=(diff>=0?'+':'')+compact(diff);
- document.getElementById('kpi-d-s').textContent=(diff>=0?'vantaggio ':'svantaggio ')+pct(Math.abs(diff/fR*100));
- document.getElementById('kpi-a').textContent=anniFuturi+' anni';
- document.getElementById('kpi-a-s').textContent=euro(annuo)+'/anno'+' · perm. '+anniPermanenza+'a';
- 
- /* Vantaggio netto box */
- const vnBox=document.getElementById('vn-box');
- if(diff>0){
-   vnBox.style.display='flex';
-   document.getElementById('vn-val').textContent=(vantaggioNetto>=0?'+':'')+compact(vantaggioNetto);
- } else {
-   vnBox.style.display='none';
- }
- 
- /* Grafico accumulo */
- safeDestroy(cA);
- cA=new Chart(document.getElementById('cAccum'),{type:'line',data:{labels,datasets:[
-   {label:'Dynamic',data:sR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,0.05)',fill:true,pointRadius:0,borderWidth:2,tension:0.4},
-   {label:'ActivITAS',data:sI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,0.05)',fill:true,pointRadius:0,borderWidth:2,tension:0.4},
-   {label:'Versamenti',data:sPuri,borderColor:'rgba(79,77,74,0.6)',backgroundColor:'transparent',pointRadius:0,borderWidth:1,borderDash:[3,4],tension:0}
- ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+euro(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}},x:{ticks:{maxTicksLimit:9,color:'#4f4d4a',font:{size:10},callback:(v,i)=>{const a=parseInt(labels[i]);return a%5===0?a+'':''}},grid:{display:false},border:{display:false}}}}});
- 
- /* Schede prestazioni */
- document.getElementById('pg').innerHTML=pCard(fR,'DYNAMIC · RAIFFEISEN','r',aliquota,pctRendita,false)+pCard(fI,'ACTIVITAS · ITAS','i',aliquota,pctRendita,true);
- 
- /* Eredità: ora dipende da pctRendita */
- const renditaR=fR*(pctRendita/100)*(1-CARICO)*COEFF;
- const renditaI=fI*(pctRendita/100)*(1-CARICO)*COEFF;
- const eL=[], eR=[], eI=[];
- 
- for(let a=pens;a<=105;a++){
-   const y=a-pens;
-   eL.push(a+'');
-   const capR=fR*(pctCapitale/100)*Math.pow(1+post/100,y);
-   const capI=fI*(pctCapitale/100)*Math.pow(1+post/100,y);
-   const eredR=calcolaEredita(renditaR, y, renditaType);
-   const eredI=calcolaEredita(renditaI, y, renditaType);
-   eR.push(Math.round(capR+eredR));
-   eI.push(Math.round(capI+eredI));
- }
- 
- const maxV=Math.max(...eR,...eI);
- const ages=[80,90,100];
- 
- /* Barre orizzontali */
- document.getElementById('hb').innerHTML=ages.map(age=>{
-   const y=age-pens;
-   if(y<0)return'';
-   const capR=fR*(pctCapitale/100)*Math.pow(1+post/100,y);
-   const capI=fI*(pctCapitale/100)*Math.pow(1+post/100,y);
-   const eredR=calcolaEredita(renditaR, y, renditaType);
-   const eredI=calcolaEredita(renditaI, y, renditaType);
-   const totaleR=Math.round(capR+eredR), totaleI=Math.round(capI+eredI);
-   const pR=maxV?Math.round(totaleR/maxV*100):0, pI=maxV?Math.round(totaleI/maxV*100):0;
-   return `<div class="hbr"><span class="hbn">età ${age}</span><div style="flex:1;display:flex;flex-direction:column;gap:4px"><div class="hbt"><div class="hbf" style="width:${pR}%;background:var(--ra)"></div></div><div class="hbt"><div class="hbf" style="width:${pI}%;background:var(--it)"></div></div></div><div class="hbv"><span style="color:var(--ra)">${compact(totaleR)}</span> <span style="color:var(--di)">·</span> <span style="color:var(--it)">${compact(totaleI)}</span></div></div>`;
- }).join('');
- 
- /* Cards età */
- document.getElementById('eg').innerHTML=ages.map(age=>{
-   const y=age-pens;
-   if(y<0)return `<div class="ec"><div class="el">Età ${age}</div><div class="ev" style="color:var(--di)">—</div></div>`;
-   const capR=fR*(pctCapitale/100)*Math.pow(1+post/100,y);
-   const capI=fI*(pctCapitale/100)*Math.pow(1+post/100,y);
-   const eredR=calcolaEredita(renditaR, y, renditaType);
-   const eredI=calcolaEredita(renditaI, y, renditaType);
-   const totaleR=Math.round(capR+eredR), totaleI=Math.round(capI+eredI);
-   return `<div class="ec"><div class="el">Età ${age}</div><div class="ev" style="color:var(--ra)">${compact(totaleR)}</div><div style="font-size:9px;color:var(--ra);opacity:.6;margin-bottom:5px">Dynamic</div><div class="ev" style="color:var(--it)">${compact(totaleI)}</div><div style="font-size:9px;color:var(--it);opacity:.6">ActivITAS</div></div>`;
- }).join('');
- 
- /* Label tipo rendita */
- const tipoLabels={
-   'vitalizia':'<strong style="color:var(--re)">Rendita vitalizia → eredità €0</strong><br>La rendita si estingue al decesso.',
-   'certa5':'<strong style="color:var(--go)">Rendita certa 5 anni</strong><br>In caso di decesso entro 5 anni dal pensionamento, gli eredi ricevono le rate residue.',
-   'certa10':'<strong style="color:var(--go)">Rendita certa 10 anni</strong><br>In caso di decesso entro 10 anni dal pensionamento, gli eredi ricevono le rate residue.',
-   'certa15':'<strong style="color:var(--go)">Rendita certa 15 anni</strong><br>In caso di decesso entro 15 anni dal pensionamento, gli eredi ricevono le rate residue.',
-   'reversibile':'<strong style="color:var(--go)">Rendita reversibile (60%)</strong><br>Al decesso del titolare, il beneficiario percepisce il 60% della rendita per massimo 15 anni.'
- };
- document.getElementById('eredita-pill-1').innerHTML=tipoLabels[renditaType]||tipoLabels['certa10'];
- 
- /* Pill confronto rendita certa 10 anni */
- const rcR=renditaR*10, rcI=renditaI*10;
- document.getElementById('rc-pill').innerHTML=`<strong style="color:var(--go)">Rendita certa 10 anni — massimo ereditabile</strong><br><span style="color:var(--ra)">Dynamic: <strong>${euro(rcR)}</strong></span><br><span style="color:var(--it)">ActivITAS: <strong>${euro(rcI)}</strong></span><br><span style="font-size:9px;color:var(--di)">Importo massimo se decesso nel 1° anno.</span>`;
- 
- /* Grafico eredità */
- safeDestroy(cE);
- cE=new Chart(document.getElementById('cEred'),{type:'line',data:{labels:eL,datasets:[
-   {label:'Dynamic',data:eR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,0.06)',fill:true,pointRadius:0,borderWidth:2,tension:0.4},
-   {label:'ActivITAS',data:eI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,0.06)',fill:true,pointRadius:0,borderWidth:2,tension:0.4}
- ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+euro(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}},x:{ticks:{maxTicksLimit:7,color:'#4f4d4a',font:{size:10},callback:(v,i)=>{const a=parseInt(eL[i]);return a%5===0?a+'a':''}},grid:{display:false},border:{display:false}}}}});
- 
- if(document.getElementById('ritaOn').checked) calcRita({eta,pens,anni:anniFuturi,annuo,rnet,rnetI,sR,sI,pctRendita,aliquota});
+ document.getElementById('pg').innerHTML=pCard(fR,'DYNAMIC · RAIFFEISEN','r',aliquota,pctRendita,false,tuttoCapPossibile)+pCard(fI,'ACTIVITAS · ITAS','i',aliquota,pctRendita,true,tuttoCapPossibile);
+ renderEredita({pens,fR,fI,pctRendita,post,etaBenef});if(document.getElementById('ritaOn').checked)calcRita({eta,pens,anni:anniFut,annuo,rnet,rnetI,sR,sI,pctRendita,aliquota});
 }
 
-function calcRita(ctx){
- const ritaEta=+ritaEtaEl.value, ritaPct=+ritaPctEl.value, ritaRate=+ritaRateEl.value;
- document.getElementById('va-ritaEta').textContent=ritaEta+' a';
- document.getElementById('va-ritaPct').textContent=ritaPct+'%';
- document.getElementById('va-ritaRate').textContent=pct(ritaRate);
- document.getElementById('rita-tipo-label').textContent=ritaPct===100?'Totale':'Parziale ('+ritaPct+'%)';
- 
- const ritaDurAnni=Math.max(1,ctx.pens-ritaEta), ritaDurMesi=ritaDurAnni*12;
- const ritaAnnoIdx=Math.max(0,Math.min(ritaEta-ctx.eta,ctx.anni));
- const posRitaR=ctx.sR[ritaAnnoIdx], posRitaI=ctx.sI[ritaAnnoIdx];
- const quotaRitaR=posRitaR*ritaPct/100, quotaRitaI=posRitaI*ritaPct/100;
- let rimanR=posRitaR*(1-ritaPct/100), rimanI=posRitaI*(1-ritaPct/100);
- const mr=ritaRate/100/12;
- const rataMR=rataRITA(quotaRitaR,ritaDurMesi,mr), rataMI=rataRITA(quotaRitaI,ritaDurMesi,mr);
- 
- document.getElementById('rita-m-r').textContent=euro(rataMR);
- document.getElementById('rita-m-i').textContent=euro(rataMI);
- document.getElementById('rita-dur').textContent=ritaDurAnni+' anni';
- document.getElementById('rita-dur-sub').textContent=ritaDurMesi+' rate mensili';
- 
- let rimFinalR=rimanR, rimFinalI=rimanI;
- for(let y=0;y<ritaDurAnni;y++){
-   rimFinalR=rimFinalR*(1+ctx.rnet/100)+ctx.annuo;
-   rimFinalI=rimFinalI*(1+ctx.rnetI/100)+ctx.annuo;
- }
- 
- const minEta=ctx.pens-5;
- document.getElementById('rita-warning').innerHTML=ritaEta<57?'<strong style="color:var(--re)">⚠ Età minima RITA: 57 anni</strong>.':ritaEta<minEta?'<strong style="color:var(--re)">⚠ Fuori finestra ordinaria dei 5 anni</strong>. Possibile solo verificando condizioni alternative.':'<strong style="color:var(--go)">✓ Finestra temporale rispettata</strong>. Verificare gli altri requisiti.';
- 
- function ritaCard(pos,quota,rimFin,totEr,rata,nomeFondo,cls){
-   const totale=ritaPct===100;
-   const pctR=ctx.pctRendita;
-   const cap60=rimFin*(1-pctR/100);
-   const ren40=rimFin*(pctR/100);
-   const annRen=ren40*(1-CARICO)*COEFF;
-   return `<div class="rc-card"><div class="pf" style="color:${cls==='r'?'var(--ra)':'var(--it)'};margin-bottom:8px">${nomeFondo}</div>
-   <div class="rita-row"><span class="rrl">Posizione inizio RITA</span><span class="rrv">${euro(pos)}</span></div>
-   <div class="rita-row"><span class="rrl">Quota in RITA</span><span class="rrv" style="color:var(--go)">${euro(quota)}</span></div>
-   <div class="rita-row"><span class="rrl">Rata mensile</span><span class="rrv" style="color:var(--go)">${euro(rata)}</span></div>
-   <div class="rita-row"><span class="rrl">Totale erogato</span><span class="rrv">${euro(totEr)}</span></div>
-   ${totale?`<div class="rita-row" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="rrl">Al pensionamento</span><span class="rrv" style="color:var(--di)">€0 — RITA totale</span></div>`:`<div class="rita-row" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="rrl">Residuo al pensionamento</span><span class="rrv">${euro(rimFin)}</span></div><div class="rita-row"><span class="rrl" style="color:var(--go)">${100-pctR}% capitale</span><span class="rrv" style="color:var(--go)">${euro(cap60)}</span></div><div class="rita-row"><span class="rrl" style="color:var(--gr)">Rendita annua</span><span class="rrv" style="color:var(--gr)">${euro(annRen)}</span></div>`}
-   </div>`;
- }
- 
- document.getElementById('rita-compare').innerHTML=ritaCard(posRitaR,quotaRitaR,rimFinalR,rataMR*ritaDurMesi,rataMR,'DYNAMIC · RAIFFEISEN','r')+ritaCard(posRitaI,quotaRitaI,rimFinalI,rataMI*ritaDurMesi,rataMI,'ACTIVITAS · ITAS','i');
- document.getElementById('rita-note').innerHTML=`<strong>Nota:</strong> durante la RITA il montante simulato viene erogato progressivamente con rendimento impostato al ${pct(ritaRate)}. Modello semplificato.`;
- 
- const labels=[], dataR=[], dataI=[], cum=[];
- for(let m=0;m<=ritaDurMesi;m++){
-   labels.push(m%12===0?(ritaEta+Math.floor(m/12))+'a':'');
-   dataR.push(Math.round(decumuloResiduo(quotaRitaR,rataMR,m,mr)));
-   dataI.push(Math.round(decumuloResiduo(quotaRitaI,rataMI,m,mr)));
-   cum.push(Math.round(rataMR*m));
- }
- safeDestroy(cRita);
- cRita=new Chart(document.getElementById('cRita'),{type:'line',data:{labels,datasets:[
-   {label:'Residuo Dynamic',data:dataR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,0.08)',fill:true,pointRadius:0,borderWidth:2,tension:0.2},
-   {label:'Residuo ActivITAS',data:dataI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,0.08)',fill:true,pointRadius:0,borderWidth:2,tension:0.2},
-   {label:'Erogato cumulato',data:cum,borderColor:'rgba(232,201,106,0.5)',backgroundColor:'transparent',pointRadius:0,borderWidth:1,borderDash:[3,4],tension:0}
- ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+euro(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},border:{display:false}},x:{ticks:{color:'#4f4d4a',font:{size:10},callback:(v,i)=>labels[i]},grid:{display:false},border:{display:false}}}}});
-}
+function renderEredita({pens,fR,fI,pctRendita,post,etaBenef}){const pctCapitale=100-pctRendita,renditaCertaR=calcolaRenditaAnnua(fR,pctRendita,renditaType),renditaCertaI=calcolaRenditaAnnua(fI,pctRendita,renditaType),eL=[],eR=[],eI=[];for(let a=pens;a<=105;a++){const y=a-pens,capR=fR*pctCapitale/100*Math.pow(1+post/100,y),capI=fI*pctCapitale/100*Math.pow(1+post/100,y),etaBEff=etaBenef+y,erR=calcolaEredita(renditaCertaR,y,renditaType,etaBEff),erI=calcolaEredita(renditaCertaI,y,renditaType,etaBEff);eL.push(a+'');eR.push(Math.round(capR+erR));eI.push(Math.round(capI+erI))}const maxV=Math.max(...eR,...eI),ages=[80,90,100];document.getElementById('hb').innerHTML=ages.map(age=>{const y=age-pens;if(y<0)return'';const idx=age-pens,tR=eR[idx],tI=eI[idx],pR=maxV?Math.round(tR/maxV*100):0,pI=maxV?Math.round(tI/maxV*100):0;return `<div class="hbr"><span class="hbn">età ${age}</span><div style="flex:1;display:flex;flex-direction:column;gap:4px"><div class="hbt"><div class="hbf" style="width:${pR}%;background:var(--ra)"></div></div><div class="hbt"><div class="hbf" style="width:${pI}%;background:var(--it)"></div></div></div><div class="hbv"><span style="color:var(--ra)">${compact(tR)}</span> <span style="color:var(--di)">·</span> <span style="color:var(--it)">${compact(tI)}</span></div></div>`}).join('');document.getElementById('eg').innerHTML=ages.map(age=>{const y=age-pens;if(y<0)return`<div class="ec"><div class="el">Età ${age}</div><div class="ev" style="color:var(--di)">—</div></div>`;const idx=age-pens;return `<div class="ec"><div class="el">Età ${age}</div><div class="ev" style="color:var(--ra)">${compact(eR[idx])}</div><div style="font-size:9px;color:var(--ra);opacity:.6;margin-bottom:5px">Dynamic</div><div class="ev" style="color:var(--it)">${compact(eI[idx])}</div><div style="font-size:9px;color:var(--it);opacity:.6">ActivITAS</div></div>`}).join('');const coeffPct=pct(getCoeff(renditaType)*100),tipoLabels={vitalizia:`<strong style="color:var(--re)">Rendita vitalizia → eredità solo quota capitale</strong><br>La rendita si estingue al decesso. Coefficiente: <strong>${coeffPct}</strong>`,certa5:`<strong style="color:var(--go)">Rendita certa 5 anni</strong><br>Rate residue ereditabili se decesso entro 5 anni. Coefficiente: <strong>${coeffPct}</strong>`,certa10:`<strong style="color:var(--go)">Rendita certa 10 anni</strong><br>Rate residue ereditabili se decesso entro 10 anni. Coefficiente: <strong>${coeffPct}</strong>`,certa15:`<strong style="color:var(--go)">Rendita certa 15 anni</strong><br>Rate residue ereditabili se decesso entro 15 anni. Coefficiente: <strong>${coeffPct}</strong>`,reversibile:`<strong style="color:var(--go)">Reversibile 60%</strong><br>Beneficiario riceve il 60% fino a ${ETA_BENEF_MAX} anni. Coefficiente: <strong>${coeffPct}</strong>`};document.getElementById('eredita-pill-1').innerHTML=tipoLabels[renditaType];const rcR=calcolaRenditaAnnua(fR,pctRendita,'certa10')*10,rcI=calcolaRenditaAnnua(fI,pctRendita,'certa10')*10;document.getElementById('rc-pill').innerHTML=`<strong style="color:var(--go)">Rendita certa 10a — massimo ereditabile</strong><br><span style="color:var(--ra)">Dynamic: <strong>${euro(rcR)}</strong></span><br><span style="color:var(--it)">ActivITAS: <strong>${euro(rcI)}</strong></span><br><span style="font-size:9px;color:var(--di)">Se decesso nel 1° anno.</span>`;safeDestroy(cE);cE=new Chart(document.getElementById('cEred'),{type:'line',data:{labels:eL,datasets:[{label:'Dynamic',data:eR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,.06)',fill:true,pointRadius:0,borderWidth:2,tension:.4},{label:'ActivITAS',data:eI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,.06)',fill:true,pointRadius:0,borderWidth:2,tension:.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+euro(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},x:{ticks:{maxTicksLimit:7,color:'#4f4d4a',font:{size:10},callback:(v,i)=>{const a=parseInt(eL[i]);return a%5===0?a+'a':''}},grid:{display:false},border:{display:false}}}}})}
 
-/* Elementi DOM */
-const etaEl=document.getElementById('eta'), pensEl=document.getElementById('pens'), tfrEl=document.getElementById('tfr'), conEl=document.getElementById('con'), transfEl=document.getElementById('transf'), rnetEl=document.getElementById('rnet'), gapEl=document.getElementById('gap'), postEl=document.getElementById('post'), pctRenditaEl=document.getElementById('pctRendita'), ritaEtaEl=document.getElementById('ritaEta'), ritaPctEl=document.getElementById('ritaPct'), ritaRateEl=document.getElementById('ritaRate'), annoInizioEl=document.getElementById('annoInizio');
+function calcRita(ctx){const ritaEta=+ritaEtaEl.value,ritaPct=+ritaPctEl.value,ritaRate=+ritaRateEl.value;document.getElementById('va-ritaEta').textContent=ritaEta+' a';document.getElementById('va-ritaPct').textContent=ritaPct+'%';document.getElementById('va-ritaRate').textContent=pct(ritaRate);document.getElementById('rita-tipo-label').textContent=ritaPct===100?'Totale':'Parziale ('+ritaPct+'%)';const ritaDurAnni=Math.max(1,ctx.pens-ritaEta),ritaDurMesi=ritaDurAnni*12,idx=Math.max(0,Math.min(ritaEta-ctx.eta,ctx.anni)),posR=ctx.sR[idx],posI=ctx.sI[idx],quotaR=posR*ritaPct/100,quotaI=posI*ritaPct/100,mr=ritaRate/100/12,rataR=rataRITA(quotaR,ritaDurMesi,mr),rataI=rataRITA(quotaI,ritaDurMesi,mr);document.getElementById('rita-m-r').textContent=euro(rataR);document.getElementById('rita-m-i').textContent=euro(rataI);document.getElementById('rita-dur').textContent=ritaDurAnni+' anni';document.getElementById('rita-dur-sub').textContent=ritaDurMesi+' rate mensili';let rimR=posR*(1-ritaPct/100),rimI=posI*(1-ritaPct/100);for(let y=0;y<ritaDurAnni;y++){rimR=rimR*(1+ctx.rnet/100)+ctx.annuo;rimI=rimI*(1+ctx.rnetI/100)+ctx.annuo}const minEta=ctx.pens-5;document.getElementById('rita-warning').innerHTML=ritaEta<57?'<strong style="color:var(--re)">⚠ Età minima RITA: 57 anni</strong>.':ritaEta<minEta?'<strong style="color:var(--re)">⚠ Fuori finestra ordinaria 5 anni</strong>.':'<strong style="color:var(--go)">✓ Finestra temporale rispettata</strong>.';function rcard(pos,quota,rim,tot,rata,nome,cls){const totale=ritaPct===100,pctR=ctx.pctRendita,cap=rim*(1-pctR/100),ren=rim*pctR/100,annRen=ren*(1-CARICO)*COEFF_VITALIZIO;return `<div class="rc-card"><div class="pf" style="color:${cls==='r'?'var(--ra)':'var(--it)'};margin-bottom:8px">${nome}</div><div class="rita-row"><span class="rrl">Posizione inizio RITA</span><span class="rrv">${euro(pos)}</span></div><div class="rita-row"><span class="rrl">Quota in RITA</span><span class="rrv" style="color:var(--go)">${euro(quota)}</span></div><div class="rita-row"><span class="rrl">Rata mensile</span><span class="rrv" style="color:var(--go)">${euro(rata)}</span></div><div class="rita-row"><span class="rrl">Totale erogato</span><span class="rrv">${euro(tot)}</span></div>${totale?`<div class="rita-row" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="rrl">Al pensionamento</span><span class="rrv" style="color:var(--di)">€0 — RITA totale</span></div>`:`<div class="rita-row" style="margin-top:4px;border-top:1px solid var(--bd2);padding-top:6px"><span class="rrl">Residuo</span><span class="rrv">${euro(rim)}</span></div><div class="rita-row"><span class="rrl">${100-pctR}% capitale</span><span class="rrv" style="color:var(--go)">${euro(cap)}</span></div><div class="rita-row"><span class="rrl">Rendita annua</span><span class="rrv" style="color:var(--gr)">${euro(annRen)}</span></div>`}</div>`}document.getElementById('rita-compare').innerHTML=rcard(posR,quotaR,rimR,rataR*ritaDurMesi,rataR,'DYNAMIC · RAIFFEISEN','r')+rcard(posI,quotaI,rimI,rataI*ritaDurMesi,rataI,'ACTIVITAS · ITAS','i');document.getElementById('rita-note').innerHTML=`<strong>Nota:</strong> RITA con rendimento ${pct(ritaRate)}. Modello semplificato.`;const labels=[],dataR=[],dataI=[],cum=[];for(let m=0;m<=ritaDurMesi;m++){labels.push(m%12===0?(ritaEta+Math.floor(m/12))+'a':'');dataR.push(Math.round(decumuloResiduo(quotaR,rataR,m,mr)));dataI.push(Math.round(decumuloResiduo(quotaI,rataI,m,mr)));cum.push(Math.round(rataR*m))}safeDestroy(cRita);cRita=new Chart(document.getElementById('cRita'),{type:'line',data:{labels,datasets:[{label:'Residuo Dynamic',data:dataR,borderColor:'#4f9cf9',backgroundColor:'rgba(79,156,249,.08)',fill:true,pointRadius:0,borderWidth:2,tension:.2},{label:'Residuo ActivITAS',data:dataI,borderColor:'#f97b4f',backgroundColor:'rgba(249,123,79,.08)',fill:true,pointRadius:0,borderWidth:2,tension:.2},{label:'Erogato cumulato',data:cum,borderColor:'rgba(232,201,106,.5)',backgroundColor:'transparent',pointRadius:0,borderWidth:1,borderDash:[3,4],tension:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+euro(c.parsed.y)}}},scales:{y:{ticks:{callback:v=>v>=1e6?'€'+(v/1e6).toFixed(1)+'M':v>=1e3?'€'+(v/1e3).toFixed(0)+'K':'€'+v,color:'#4f4d4a',font:{size:10}},grid:{color:'rgba(255,255,255,.04)'},border:{display:false}},x:{ticks:{color:'#4f4d4a',font:{size:10},callback:(v,i)=>labels[i]},grid:{display:false},border:{display:false}}}}})}
 
-/* Event listeners */
-ids.forEach(id=>{
-  const el=document.getElementById(id);
-  if(el)el.addEventListener(id==='ritaOn'?'change':'input',()=>{
-    if(id==='ritaOn'){
-      const on=el.checked;
-      document.getElementById('rita-opts').style.display=on?'flex':'none';
-      document.getElementById('rita-section').style.display=on?'block':'none';
-      document.getElementById('ritaToggle').style.background=on?'rgba(232,201,106,0.3)':'var(--bd2)';
-      document.getElementById('ritaThumb').style.background=on?'var(--go)':'var(--di)';
-      document.getElementById('ritaThumb').style.left=on?'19px':'3px';
-    }
-    calc();
-  });
-});
-
-document.getElementById('rendita-opts').addEventListener('click',function(e){
-  const opt=e.target.closest('.rendita-opt');
-  if(!opt) return;
-  this.querySelectorAll('.rendita-opt').forEach(o=>o.classList.remove('active'));
-  opt.classList.add('active');
-  renditaType=opt.dataset.type;
-  calc();
-});
-
+const etaEl=document.getElementById('eta'),pensEl=document.getElementById('pens'),tfrEl=document.getElementById('tfr'),conEl=document.getElementById('con'),spotEl=document.getElementById('spot'),transfEl=document.getElementById('transf'),rnetEl=document.getElementById('rnet'),gapEl=document.getElementById('gap'),postEl=document.getElementById('post'),pctRenditaEl=document.getElementById('pctRendita'),ritaEtaEl=document.getElementById('ritaEta'),ritaPctEl=document.getElementById('ritaPct'),ritaRateEl=document.getElementById('ritaRate'),annoInizioEl=document.getElementById('annoInizio'),etaBenefEl=document.getElementById('etaBenef');
+popolaAnnoInizio();
+ids.forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener(id==='ritaOn'?'change':'input',()=>{if(id==='ritaOn'){const on=el.checked;document.getElementById('rita-opts').style.display=on?'flex':'none';document.getElementById('rita-section').style.display=on?'block':'none';document.getElementById('ritaToggle').style.background=on?'rgba(232,201,106,.3)':'var(--bd2)';document.getElementById('ritaThumb').style.background=on?'var(--go)':'var(--di)';document.getElementById('ritaThumb').style.left=on?'19px':'3px'}calc()})});
+document.getElementById('btn-full-rendita').addEventListener('click',()=>{pctRenditaEl.value=+pctRenditaEl.value===100?Math.max(0,+pctRenditaEl.min):100;calc()});
+document.getElementById('btn-export').addEventListener('click',generaExport);
+document.getElementById('rendita-opts').addEventListener('click',e=>{const opt=e.target.closest('.rendita-opt');if(!opt)return;document.querySelectorAll('.rendita-opt').forEach(o=>o.classList.remove('active'));opt.classList.add('active');renditaType=opt.dataset.type;document.getElementById('reversibile-opts').style.display=renditaType==='reversibile'?'flex':'none';calc()});
 calc();
 </script>
 </body>
