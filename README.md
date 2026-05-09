@@ -58,7 +58,7 @@ Questo simulatore consente di confrontare due linee di fondi pensione — **Dyna
 
 Il simulatore è pubblicato con GitHub Pages. Visita:
 
-🔗 **https://tuo-username.github.io/pensione-complementare/**
+🔗 **https://MichelangeloGargiulo/pensione-complementare/**
 
 *(sostituisci `tuo-username` con il tuo nome utente GitHub)*
 
